@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>ZenType Dashboard</title>
+    <title>Xtype Tester Dashboard</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
@@ -39,7 +39,7 @@
         <div class="p-2 bg-primary/10 rounded-lg">
             <span class="material-symbols-outlined text-primary text-2xl">keyboard</span>
         </div>
-        <h1 class="text-xl font-bold tracking-tight text-slate-800 dark:text-slate-100">ZenType</h1>
+        <h1 class="text-xl font-bold tracking-tight text-slate-800 dark:text-slate-100">Xtype Tester</h1>
     </div>
     <div class="flex items-center gap-6">
         <nav class="hidden md:flex items-center gap-8">
@@ -51,25 +51,18 @@
 <!-- App Container -->
 <main class="max-w-5xl mx-auto px-6 py-12 flex flex-col items-center justify-start grow">
     
-    <!-- Top Toolbar -->
-    <div class="w-full flex justify-between items-center mb-12">
-        <div class="flex items-center gap-2 px-3 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg">
-            <span class="material-symbols-outlined text-[18px] text-slate-400">language</span>
-            <span class="text-sm font-medium">English (US)</span>
-        </div>
-    </div>
 
     <!-- Typing Interface Form -->
     <form th:action="@{/result}" method="post" class="w-full flex flex-col relative py-4 px-2 group">
         
-        <!-- Original Text Display (Word Highlighted) -->
-        <div id="text-display" class="font-mono text-xl md:text-2xl text-slate-500 dark:text-slate-400 select-none mb-8 p-6 bg-slate-100 dark:bg-slate-800/50 rounded-xl leading-relaxed border border-slate-200 dark:border-slate-700">
+        <!-- Original Text Display (Character Highlighted) -->
+        <div id="text-display" class="font-mono text-xl md:text-2xl text-slate-500 dark:text-slate-400 select-none mb-8 p-6 bg-slate-100 dark:bg-slate-800/50 rounded-xl leading-relaxed border border-slate-200 dark:border-slate-700 whitespace-pre-wrap">
             <!-- Words will be injected here by Javascript -->
         </div>
 
         <!-- Hidden inputs -->
         <input type="hidden" id="heatmapData" name="heatmapData" value="{}">
-        <input type="hidden" id="originalText" th:value="${paragraph}">
+        <input type="hidden" id="originalText" name="originalText" th:value="${paragraph}">
 
         <!-- User Input Area -->
         <textarea 
@@ -96,27 +89,12 @@
 <footer class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-100 dark:border-slate-800 px-8 py-6 z-50">
     <div class="max-w-5xl mx-auto flex justify-between items-center">
         <div class="flex gap-12">
-            <!-- WPM -->
+            <!-- Highest Score -->
             <div class="flex flex-col">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Words Per Minute</span>
-                <div class="flex items-baseline gap-1" th:if="${wpm != null}">
-                    <span class="text-4xl font-bold text-primary" th:text="${wpm}">84</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Highest Score</span>
+                <div class="flex items-baseline gap-1">
+                    <span class="text-4xl font-bold text-amber-500" th:text="${highestWpm}">0</span>
                     <span class="text-xs font-medium text-slate-400">wpm</span>
-                </div>
-                <div class="flex items-baseline gap-1" th:unless="${wpm != null}">
-                    <span class="text-4xl font-bold text-slate-300 dark:text-slate-700">-</span>
-                </div>
-            </div>
-            
-            <!-- Accuracy -->
-            <div class="flex flex-col">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Accuracy</span>
-                <div class="flex items-baseline gap-1" th:if="${accuracy != null}">
-                    <span class="text-4xl font-bold text-slate-800 dark:text-slate-100" th:text="${accuracy}">98.2</span>
-                    <span class="text-xs font-medium text-slate-400">%</span>
-                </div>
-                <div class="flex items-baseline gap-1" th:unless="${accuracy != null}">
-                    <span class="text-4xl font-bold text-slate-300 dark:text-slate-700">-</span>
                 </div>
             </div>
         </div>
@@ -137,47 +115,43 @@
         const originalTextInput = document.getElementById("originalText");
         const textDisplayDiv = document.getElementById("text-display");
         
-        // --- Word Highlighting Logic ---
+        // --- Character Highlighting Logic ---
         
         const originalText = originalTextInput.value;
-        const words = originalText.trim().split(/\s+/);
+        const chars = originalText.split('');
         
-        // Wrap each word in a span
-        textDisplayDiv.innerHTML = words.map((word, index) => 
-            `<span id="word-${index}" class="transition-colors duration-200">${word}</span>`
-        ).join(" ");
+        // Wrap each character in a span
+        textDisplayDiv.innerHTML = chars.map((char, index) => 
+            `<span id="char-${index}" class="transition-colors duration-75">${char}</span>`
+        ).join("");
         
         // Function to update highlights
         const updateHighlight = () => {
             const typedContent = typedTextArea.value;
-            const typedWords = typedContent.trim().split(/\s+/);
-            
-            // If starting fresh or space at the end, the current index is length of typedWords
-            // E.g. typing "The quick " -> ends with space, so we are on index 2.
-            let currentIndex = typedWords.length - 1;
-            if (typedContent.endsWith(' ') || typedContent.endsWith('\n')) {
-                 currentIndex = typedWords.length;
-            }
-            if (typedContent.trim() === '') {
-                 currentIndex = 0; // Started at 0
-            }
+            const typedChars = typedContent.split('');
 
             // Reset all and apply styles
-            words.forEach((_, index) => {
-                const span = document.getElementById(`word-${index}`);
+            chars.forEach((char, index) => {
+                const span = document.getElementById(`char-${index}`);
                 if (!span) return;
                 
                 // Reset classes
-                span.className = "transition-colors duration-200";
+                span.className = "transition-colors duration-75";
                 
-                if (index < currentIndex) {
-                    // Passed words - subtle dark/light indication (assume typed correctly for visual flow)
-                    span.classList.add("text-slate-800", "dark:text-slate-300");
-                } else if (index === currentIndex) {
-                    // Current active word
-                    span.classList.add("text-primary", "font-bold", "bg-primary/10", "px-1", "rounded");
+                if (index < typedChars.length) {
+                    // Passed characters
+                    if (typedChars[index] === char) {
+                        // Correctly typed
+                        span.classList.add("text-primary", "font-bold");
+                    } else {
+                        // Incorrectly typed
+                        span.classList.add("text-rose-500", "font-bold", "bg-rose-500/20", "px-0.5", "rounded");
+                    }
+                } else if (index === typedChars.length) {
+                    // Current active character cursor
+                    span.classList.add("text-slate-900", "dark:text-white", "font-black", "bg-slate-300", "dark:bg-slate-600", "px-0.5", "rounded");
                 } else {
-                    // Future words
+                    // Future characters
                     span.classList.add("text-slate-400", "dark:text-slate-600");
                 }
             });
@@ -186,7 +160,7 @@
         // Initial highlight setup
         updateHighlight();
         
-        // Listen to input events for word highlighting
+        // Listen to input events for character highlighting
         typedTextArea.addEventListener("input", updateHighlight);
         
         // --- Heatmap Data Collection Logic ---
