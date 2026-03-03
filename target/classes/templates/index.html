@@ -62,13 +62,18 @@
     <!-- Typing Interface Form -->
     <form th:action="@{/result}" method="post" class="w-full flex flex-col relative py-4 px-2 group">
         
-        <!-- Original Text Display -->
-        <div class="font-mono text-xl md:text-2xl text-slate-500 dark:text-slate-400 select-none mb-8 p-6 bg-slate-100 dark:bg-slate-800/50 rounded-xl leading-relaxed border border-slate-200 dark:border-slate-700"
-             th:text="${paragraph}">
+        <!-- Original Text Display (Word Highlighted) -->
+        <div id="text-display" class="font-mono text-xl md:text-2xl text-slate-500 dark:text-slate-400 select-none mb-8 p-6 bg-slate-100 dark:bg-slate-800/50 rounded-xl leading-relaxed border border-slate-200 dark:border-slate-700">
+            <!-- Words will be injected here by Javascript -->
         </div>
+
+        <!-- Hidden inputs -->
+        <input type="hidden" id="heatmapData" name="heatmapData" value="{}">
+        <input type="hidden" id="originalText" th:value="${paragraph}">
 
         <!-- User Input Area -->
         <textarea 
+            id="typedText"
             name="typedText" 
             rows="6" 
             class="w-full font-mono text-2xl md:text-3xl text-slate-900 dark:text-slate-100 bg-transparent border-2 border-slate-200 dark:border-slate-700 rounded-xl p-6 focus:border-primary focus:ring-1 focus:ring-primary transition-all outline-none"
@@ -79,7 +84,7 @@
         ></textarea>
         
         <div class="mt-8 flex justify-end">
-            <button type="submit" class="flex items-center gap-2 px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-emerald-400 transition-all shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-1">
+            <button type="submit" class="flex items-center gap-2 px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/20 hover:-translate-y-1">
                 <span class="material-symbols-outlined">bolt</span>
                 Submit Speed Test
             </button>
@@ -124,6 +129,84 @@
         </div>
     </div>
 </footer>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const typedTextArea = document.getElementById("typedText");
+        const heatmapInput = document.getElementById("heatmapData");
+        const originalTextInput = document.getElementById("originalText");
+        const textDisplayDiv = document.getElementById("text-display");
+        
+        // --- Word Highlighting Logic ---
+        
+        const originalText = originalTextInput.value;
+        const words = originalText.trim().split(/\s+/);
+        
+        // Wrap each word in a span
+        textDisplayDiv.innerHTML = words.map((word, index) => 
+            `<span id="word-${index}" class="transition-colors duration-200">${word}</span>`
+        ).join(" ");
+        
+        // Function to update highlights
+        const updateHighlight = () => {
+            const typedContent = typedTextArea.value;
+            const typedWords = typedContent.trim().split(/\s+/);
+            
+            // If starting fresh or space at the end, the current index is length of typedWords
+            // E.g. typing "The quick " -> ends with space, so we are on index 2.
+            let currentIndex = typedWords.length - 1;
+            if (typedContent.endsWith(' ') || typedContent.endsWith('\n')) {
+                 currentIndex = typedWords.length;
+            }
+            if (typedContent.trim() === '') {
+                 currentIndex = 0; // Started at 0
+            }
+
+            // Reset all and apply styles
+            words.forEach((_, index) => {
+                const span = document.getElementById(`word-${index}`);
+                if (!span) return;
+                
+                // Reset classes
+                span.className = "transition-colors duration-200";
+                
+                if (index < currentIndex) {
+                    // Passed words - subtle dark/light indication (assume typed correctly for visual flow)
+                    span.classList.add("text-slate-800", "dark:text-slate-300");
+                } else if (index === currentIndex) {
+                    // Current active word
+                    span.classList.add("text-primary", "font-bold", "bg-primary/10", "px-1", "rounded");
+                } else {
+                    // Future words
+                    span.classList.add("text-slate-400", "dark:text-slate-600");
+                }
+            });
+        };
+        
+        // Initial highlight setup
+        updateHighlight();
+        
+        // Listen to input events for word highlighting
+        typedTextArea.addEventListener("input", updateHighlight);
+        
+        // --- Heatmap Data Collection Logic ---
+        
+        // Store key frequencies
+        const keyFrequencies = {};
+        
+        // Only track valid standard characters (A-Z) and map spacing if needed
+        typedTextArea.addEventListener("keydown", (e) => {
+            // Ignore modifiers, backspace, etc. purely track typing keys
+            if (e.key.length === 1 && e.key.match(/[a-zA-Z\s]/)) {
+                const key = e.key.toUpperCase();
+                keyFrequencies[key] = (keyFrequencies[key] || 0) + 1;
+                
+                // Update hidden input with JSON string
+                heatmapInput.value = JSON.stringify(keyFrequencies);
+            }
+        });
+    });
+</script>
 
 </body>
 </html>

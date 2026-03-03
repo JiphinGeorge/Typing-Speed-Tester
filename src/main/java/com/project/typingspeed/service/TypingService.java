@@ -5,6 +5,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class TypingService {
 
+    private int highestWpm = 0;
+
+    // Updates highest WPM if the current score is greater
+    public void updateHighestWpm(int currentWpm) {
+        if (currentWpm > highestWpm) {
+            highestWpm = currentWpm;
+        }
+    }
+
+    // Retrieves current highest WPM
+    public int getHighestWpm() {
+        return highestWpm;
+    }
+
     // WPM = number of words typed (assume 1-minute test)
     public int calculateWPM(String typedText) {
         if (typedText == null || typedText.trim().isEmpty()) {

@@ -29,15 +29,24 @@ public class TypingController {
 
     // POST mapping to process typing input and return result
     @PostMapping("/result")
-    public String processTypingResult(@RequestParam("typedText") String typedText, Model model) {
+    public String processTypingResult(
+            @RequestParam("typedText") String typedText,
+            @RequestParam(value = "heatmapData", required = false, defaultValue = "{}") String heatmapData,
+            Model model) {
+        
         int wpm = typingService.calculateWPM(typedText);
         double accuracy = typingService.calculateAccuracy(typedText, PREDEFINED_PARAGRAPH);
+
+        // Update highest WPM
+        typingService.updateHighestWpm(wpm);
 
         model.addAttribute("paragraph", PREDEFINED_PARAGRAPH);
         model.addAttribute("typedText", typedText);
         model.addAttribute("wpm", wpm);
         // Format accuracy to 2 decimal places
         model.addAttribute("accuracy", String.format("%.2f", accuracy));
+        model.addAttribute("highestWpm", typingService.getHighestWpm());
+        model.addAttribute("heatmapData", heatmapData);
 
         return "dashboard";
     }
