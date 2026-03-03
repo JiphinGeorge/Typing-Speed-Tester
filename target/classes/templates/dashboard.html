@@ -60,174 +60,50 @@
 </div>
 </div>
 </header>
-<main class="px-4 md:px-10 lg:px-20 xl:px-40 py-8">
-<div class="flex flex-col gap-8">
-<div class="flex flex-col gap-2 flex-col md:flex-row md:justify-between md:items-end w-full">
+<main class="px-4 md:px-10 lg:px-20 xl:px-40 py-8 max-w-7xl mx-auto flex flex-col items-center">
+<div class="flex flex-col gap-10 w-full">
+<div class="flex flex-col gap-2 flex-col md:flex-row md:justify-between md:items-end w-full border-b border-primary/10 pb-6">
 <div>
-<h1 class="text-slate-900 dark:text-slate-100 text-4xl font-black tracking-tight">Speed Typing Analysis</h1>
-<p class="text-primary font-medium">Real-time performance metrics and keypress optimization</p>
+<h1 class="text-slate-900 dark:text-slate-100 text-4xl font-black tracking-tight">Test Results</h1>
+<p class="text-primary font-medium mt-1">Review your typing performance and heatmap metrics.</p>
 </div>
-<a href="/" class="mt-4 md:mt-0 px-6 py-2.5 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-all shadow-md flex items-center gap-2 self-start md:self-auto">
+<a href="/" class="mt-4 md:mt-0 px-8 py-3 bg-primary text-white rounded-xl font-bold hover:bg-primary/90 transition-all shadow-lg flex items-center gap-2 self-start md:self-auto">
 <span class="material-symbols-outlined">restart_alt</span>
-Try Again
+Restart Test
 </a>
 </div>
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm border border-primary/10">
-<div class="flex justify-between items-start">
-<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Average WPM</p>
-<span class="material-symbols-outlined text-accent-blue">speed</span>
+<!-- Key Metrics Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full">
+<div class="flex flex-col items-center justify-center gap-2 rounded-2xl p-8 bg-white dark:bg-slate-800 shadow-sm border border-primary/10">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-bold uppercase tracking-widest">WPM</p>
+<p class="text-slate-900 dark:text-slate-100 text-6xl font-black text-primary" th:text="${wpm}">84</p>
 </div>
-<p class="text-slate-900 dark:text-slate-100 text-3xl font-bold" th:text="${wpm}">84</p>
-<div class="flex items-center gap-1 text-emerald-600 text-sm font-bold">
-<span class="material-symbols-outlined text-xs">trending_up</span>
-<span>Last Run</span>
+
+<div class="flex flex-col items-center justify-center gap-2 rounded-2xl p-8 bg-white dark:bg-slate-800 shadow-sm border border-primary/10">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-bold uppercase tracking-widest">Accuracy</p>
+<p class="text-slate-900 dark:text-slate-100 text-6xl font-black text-accent-purple" th:text="${accuracy} + '%'">98.2%</p>
 </div>
-</div>
-<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm border border-primary/10">
-<div class="flex justify-between items-start">
-<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Accuracy</p>
-<span class="material-symbols-outlined text-accent-purple">target</span>
-</div>
-<p class="text-slate-900 dark:text-slate-100 text-3xl font-bold" th:text="${accuracy} + '%'">98.2%</p>
-<div class="flex items-center gap-1 text-emerald-600 text-sm font-bold">
-<span class="material-symbols-outlined text-xs">trending_up</span>
-<span>Detailed</span>
+
+<div class="flex flex-col items-center justify-center gap-2 rounded-2xl p-8 bg-white dark:bg-slate-800 shadow-sm border-2 border-primary/30 relative overflow-hidden group">
+<div class="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors pointer-events-none"></div>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-bold uppercase tracking-widest flex items-center gap-2">
+    <span class="material-symbols-outlined text-[16px] text-amber-500">emoji_events</span>
+    Highest Score
+</p>
+<p class="text-slate-900 dark:text-slate-100 text-6xl font-black" th:text="${highestWpm}">105</p>
 </div>
 </div>
-<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm border border-primary/10">
-<div class="flex justify-between items-start">
-<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Top Speed</p>
-<span class="material-symbols-outlined text-accent-pink">rocket_launch</span>
-</div>
-<p class="text-slate-900 dark:text-slate-100 text-3xl font-bold" th:text="${wpm + 12}">105</p>
-<div class="flex items-center gap-1 text-emerald-600 text-sm font-bold" th:if="${wpm >= 60}">
-<span class="material-symbols-outlined text-xs">celebration</span>
-<span>Excellent!</span>
-</div>
-<div class="flex items-center gap-1 text-amber-500 text-sm font-bold" th:if="${wpm < 60}">
-<span class="material-symbols-outlined text-xs">trending_up</span>
-<span>Keep going!</span>
-</div>
-</div>
-<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm border border-primary/10">
-<div class="flex justify-between items-start">
-<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Consistency</p>
-<span class="material-symbols-outlined text-primary">analytics</span>
-</div>
-<p class="text-slate-900 dark:text-slate-100 text-3xl font-bold">92%</p>
-<div class="flex items-center gap-1 text-emerald-600 text-sm font-bold">
-<span class="material-symbols-outlined text-xs">trending_up</span>
-<span>+2.1%</span>
-</div>
-</div>
-</div>
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-<div class="lg:col-span-2 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm border border-primary/10 flex flex-col gap-6">
-<div class="flex justify-between items-center">
-<h3 class="text-slate-900 dark:text-slate-100 text-xl font-bold">Keypress Heatmap</h3>
+
+<div class="w-full">
+<div class="rounded-2xl p-8 bg-white dark:bg-slate-800 shadow-sm border border-primary/10 flex flex-col gap-8 w-full max-w-4xl mx-auto">
+<div class="flex justify-between items-center border-b border-primary/10 pb-4">
+<h3 class="text-slate-900 dark:text-slate-100 text-xl font-bold flex items-center gap-2">
+    <span class="material-symbols-outlined text-primary">grid_on</span>
+    Keypress Frequency Heatmap
+</h3>
 <div class="flex gap-2">
-<span class="px-3 py-1 bg-slate-100 dark:bg-slate-700 rounded text-xs font-bold text-slate-600 dark:text-slate-300">Last 7 Days</span>
-</div>
-</div>
-<div class="grid grid-rows-4 gap-2">
-<div class="flex gap-2 justify-center">
-<div class="w-10 h-10 rounded bg-accent-blue/40 flex items-center justify-center text-xs font-bold border border-accent-blue/20">Q</div>
-<div class="w-10 h-10 rounded bg-accent-purple/60 flex items-center justify-center text-xs font-bold border border-accent-purple/20">W</div>
-<div class="w-10 h-10 rounded bg-accent-pink/80 flex items-center justify-center text-xs font-bold border border-accent-pink/20 text-white">E</div>
-<div class="w-10 h-10 rounded bg-accent-purple/90 flex items-center justify-center text-xs font-bold border border-accent-purple/20 text-white">R</div>
-<div class="w-10 h-10 rounded bg-accent-blue/30 flex items-center justify-center text-xs font-bold border border-accent-blue/20">T</div>
-<div class="w-10 h-10 rounded bg-accent-blue/20 flex items-center justify-center text-xs font-bold border border-accent-blue/20">Y</div>
-<div class="w-10 h-10 rounded bg-accent-purple/50 flex items-center justify-center text-xs font-bold border border-accent-purple/20">U</div>
-<div class="w-10 h-10 rounded bg-accent-pink/70 flex items-center justify-center text-xs font-bold border border-accent-pink/20 text-white">I</div>
-<div class="w-10 h-10 rounded bg-accent-purple/60 flex items-center justify-center text-xs font-bold border border-accent-purple/20 text-white">O</div>
-<div class="w-10 h-10 rounded bg-accent-blue/40 flex items-center justify-center text-xs font-bold border border-accent-blue/20">P</div>
-</div>
-<div class="flex gap-2 justify-center ml-4">
-<div class="w-10 h-10 rounded bg-accent-pink/90 flex items-center justify-center text-xs font-bold border border-accent-pink/20 text-white shadow-lg shadow-accent-pink/20">A</div>
-<div class="w-10 h-10 rounded bg-accent-purple/70 flex items-center justify-center text-xs font-bold border border-accent-purple/20 text-white">S</div>
-<div class="w-10 h-10 rounded bg-accent-pink/60 flex items-center justify-center text-xs font-bold border border-accent-pink/20 text-white">D</div>
-<div class="w-10 h-10 rounded bg-accent-blue/80 flex items-center justify-center text-xs font-bold border border-accent-blue/20 text-white">F</div>
-<div class="w-10 h-10 rounded bg-accent-purple/40 flex items-center justify-center text-xs font-bold border border-accent-purple/20">G</div>
-<div class="w-10 h-10 rounded bg-accent-blue/50 flex items-center justify-center text-xs font-bold border border-accent-blue/20">H</div>
-<div class="w-10 h-10 rounded bg-accent-pink/30 flex items-center justify-center text-xs font-bold border border-accent-pink/20">J</div>
-<div class="w-10 h-10 rounded bg-accent-purple/40 flex items-center justify-center text-xs font-bold border border-accent-purple/20">K</div>
-<div class="w-10 h-10 rounded bg-accent-blue/30 flex items-center justify-center text-xs font-bold border border-accent-blue/20">L</div>
-</div>
-<div class="flex gap-2 justify-center ml-8">
-<div class="w-10 h-10 rounded bg-accent-blue/20 flex items-center justify-center text-xs font-bold border border-accent-blue/20">Z</div>
-<div class="w-10 h-10 rounded bg-accent-purple/30 flex items-center justify-center text-xs font-bold border border-accent-purple/20">X</div>
-<div class="w-10 h-10 rounded bg-accent-pink/50 flex items-center justify-center text-xs font-bold border border-accent-pink/20">C</div>
-<div class="w-10 h-10 rounded bg-accent-blue/40 flex items-center justify-center text-xs font-bold border border-accent-blue/20">V</div>
-<div class="w-10 h-10 rounded bg-accent-purple/30 flex items-center justify-center text-xs font-bold border border-accent-purple/20">B</div>
-<div class="w-10 h-10 rounded bg-accent-pink/20 flex items-center justify-center text-xs font-bold border border-accent-pink/20">N</div>
-<div class="w-10 h-10 rounded bg-accent-blue/20 flex items-center justify-center text-xs font-bold border border-accent-blue/20">M</div>
-</div>
-<div class="flex gap-2 justify-center">
-<div class="w-48 h-10 rounded bg-accent-pink/100 flex items-center justify-center text-xs font-bold border border-accent-pink/40 text-white shadow-xl shadow-accent-pink/30">SPACE</div>
-</div>
-</div>
-<div class="flex justify-center gap-4 mt-2">
-<div class="flex items-center gap-2">
-<div class="w-3 h-3 rounded-full bg-accent-blue/20"></div>
-<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Low Frequency</span>
-</div>
-<div class="flex items-center gap-2">
-<div class="w-3 h-3 rounded-full bg-accent-pink"></div>
-<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">High Frequency</span>
-</div>
-</div>
-</div>
-<div class="rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm border border-primary/10 flex flex-col gap-6">
-<h3 class="text-slate-900 dark:text-slate-100 text-xl font-bold">Finger Speed (CPM)</h3>
-<div class="flex flex-col gap-5">
-<div class="flex flex-col gap-2">
-<div class="flex justify-between text-xs font-bold text-slate-500 uppercase">
-<span>Left Index</span>
-<span th:text="${wpm * 5} + ' CPM'">420 CPM</span>
-</div>
-<div class="h-2 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-<div class="h-full bg-accent-blue rounded-full" style="width: 85%"></div>
-</div>
-</div>
-<div class="flex flex-col gap-2">
-<div class="flex justify-between text-xs font-bold text-slate-500 uppercase">
-<span>Right Index</span>
-<span th:text="${wpm * 4.8} + ' CPM'">410 CPM</span>
-</div>
-<div class="h-2 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-<div class="h-full bg-accent-purple rounded-full" style="width: 82%"></div>
-</div>
-</div>
-<div class="flex flex-col gap-2">
-<div class="flex justify-between text-xs font-bold text-slate-500 uppercase">
-<span>Middle Fingers</span>
-<span th:text="${wpm * 4.5} + ' CPM'">380 CPM</span>
-</div>
-<div class="h-2 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-<div class="h-full bg-accent-pink rounded-full" style="width: 76%"></div>
-</div>
-</div>
-<div class="flex flex-col gap-2">
-<div class="flex justify-between text-xs font-bold text-slate-500 uppercase">
-<span>Pinkies</span>
-<span th:text="${wpm * 2.5} + ' CPM'">210 CPM</span>
-</div>
-<div class="h-2 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-<div class="h-full bg-primary rounded-full" style="width: 45%"></div>
-</div>
-</div>
-<div class="flex flex-col gap-2">
-<div class="flex justify-between text-xs font-bold text-slate-500 uppercase">
-<span>Thumbs</span>
-<span th:text="${wpm * 5.3} + ' CPM'">450 CPM</span>
-</div>
-<div class="h-2 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-<div class="h-full bg-emerald-500 rounded-full" style="width: 92%"></div>
-</div>
-</div>
-</div>
+<span class="px-3 py-1 bg-slate-100 dark:bg-slate-700 rounded text-xs font-bold text-slate-600 dark:text-slate-300 tracking-wider">THIS SESSION</span>
 </div>
 </div>
 <div class="rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm border border-primary/10 flex flex-col gap-6">
