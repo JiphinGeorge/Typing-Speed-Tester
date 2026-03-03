@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ZenType Dashboard Analysis</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7b00ff",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#190f23",
+                        "accent-blue": "#3b82f6",
+                        "accent-pink": "#ec4899",
+                        "accent-purple": "#a855f7",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between border-b border-primary/10 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md px-6 py-3 sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<div class="text-primary">
+<span class="material-symbols-outlined text-3xl">keyboard</span>
+</div>
+<h2 class="text-slate-900 dark:text-slate-100 text-lg font-bold leading-tight tracking-tight">TypeAnalytics</h2>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary transition-colors text-sm font-semibold border-b-2 border-primary pb-1" href="/result">Dashboard</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary transition-colors text-sm font-semibold" href="#">History</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary transition-colors text-sm font-semibold" href="/">Practice</a>
+<a class="text-slate-600 dark:text-slate-400 hover:text-primary transition-colors text-sm font-semibold" href="#">Settings</a>
+</nav>
+<div class="flex gap-2 border-l border-primary/10 pl-6">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-primary/10 text-primary hover:bg-primary/20 transition-all">
+<span class="material-symbols-outlined text-[20px]">dark_mode</span>
+</button>
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-primary/10 text-primary hover:bg-primary/20 transition-all">
+<span class="material-symbols-outlined text-[20px]">language</span>
+</button>
+</div>
+<div class="bg-primary/20 rounded-full size-10 flex items-center justify-center overflow-hidden border border-primary/30">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="User profile avatar illustration" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXwVVSpAC692AhQVgttovJrjDHFfuT4eGDuhCrLuiDgMOZkWsDEvXlkoWH30noqv1gEMBOQLIBCT0ujR2RLVVXsLQDCIDHXIGyXe1943h5feXix-RMivDhxZVau1fnTuCVVv3DT8Ce3eiZ7s6oJp5x5NdXFT--DiOqKGf70RglBrMs-P5MFpK_IuwJDxkzW2LE6Iivwt7bpjNd9iSmf4p-ElCvLO02te82vf1KI0NoMLRZ2wAeEB9jIJYKW7wPUWHXgcxBGPLS2vI"/>
+</div>
+</div>
+</header>
+<main class="px-4 md:px-10 lg:px-20 xl:px-40 py-8">
+<div class="flex flex-col gap-8">
+<div class="flex flex-col gap-2 flex-col md:flex-row md:justify-between md:items-end w-full">
+<div>
+<h1 class="text-slate-900 dark:text-slate-100 text-4xl font-black tracking-tight">Speed Typing Analysis</h1>
+<p class="text-primary font-medium">Real-time performance metrics and keypress optimization</p>
+</div>
+<a href="/" class="mt-4 md:mt-0 px-6 py-2.5 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-all shadow-md flex items-center gap-2 self-start md:self-auto">
+<span class="material-symbols-outlined">restart_alt</span>
+Try Again
+</a>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm border border-primary/10">
+<div class="flex justify-between items-start">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Average WPM</p>
+<span class="material-symbols-outlined text-accent-blue">speed</span>
+</div>
+<p class="text-slate-900 dark:text-slate-100 text-3xl font-bold" th:text="${wpm}">84</p>
+<div class="flex items-center gap-1 text-emerald-600 text-sm font-bold">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+<span>Last Run</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm border border-primary/10">
+<div class="flex justify-between items-start">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Accuracy</p>
+<span class="material-symbols-outlined text-accent-purple">target</span>
+</div>
+<p class="text-slate-900 dark:text-slate-100 text-3xl font-bold" th:text="${accuracy} + '%'">98.2%</p>
+<div class="flex items-center gap-1 text-emerald-600 text-sm font-bold">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+<span>Detailed</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm border border-primary/10">
+<div class="flex justify-between items-start">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Top Speed</p>
+<span class="material-symbols-outlined text-accent-pink">rocket_launch</span>
+</div>
+<p class="text-slate-900 dark:text-slate-100 text-3xl font-bold" th:text="${wpm + 12}">105</p>
+<div class="flex items-center gap-1 text-emerald-600 text-sm font-bold" th:if="${wpm >= 60}">
+<span class="material-symbols-outlined text-xs">celebration</span>
+<span>Excellent!</span>
+</div>
+<div class="flex items-center gap-1 text-amber-500 text-sm font-bold" th:if="${wpm < 60}">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+<span>Keep going!</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm border border-primary/10">
+<div class="flex justify-between items-start">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-medium">Consistency</p>
+<span class="material-symbols-outlined text-primary">analytics</span>
+</div>
+<p class="text-slate-900 dark:text-slate-100 text-3xl font-bold">92%</p>
+<div class="flex items-center gap-1 text-emerald-600 text-sm font-bold">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+<span>+2.1%</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<div class="lg:col-span-2 rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm border border-primary/10 flex flex-col gap-6">
+<div class="flex justify-between items-center">
+<h3 class="text-slate-900 dark:text-slate-100 text-xl font-bold">Keypress Heatmap</h3>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-slate-100 dark:bg-slate-700 rounded text-xs font-bold text-slate-600 dark:text-slate-300">Last 7 Days</span>
+</div>
+</div>
+<div class="grid grid-rows-4 gap-2">
+<div class="flex gap-2 justify-center">
+<div class="w-10 h-10 rounded bg-accent-blue/40 flex items-center justify-center text-xs font-bold border border-accent-blue/20">Q</div>
+<div class="w-10 h-10 rounded bg-accent-purple/60 flex items-center justify-center text-xs font-bold border border-accent-purple/20">W</div>
+<div class="w-10 h-10 rounded bg-accent-pink/80 flex items-center justify-center text-xs font-bold border border-accent-pink/20 text-white">E</div>
+<div class="w-10 h-10 rounded bg-accent-purple/90 flex items-center justify-center text-xs font-bold border border-accent-purple/20 text-white">R</div>
+<div class="w-10 h-10 rounded bg-accent-blue/30 flex items-center justify-center text-xs font-bold border border-accent-blue/20">T</div>
+<div class="w-10 h-10 rounded bg-accent-blue/20 flex items-center justify-center text-xs font-bold border border-accent-blue/20">Y</div>
+<div class="w-10 h-10 rounded bg-accent-purple/50 flex items-center justify-center text-xs font-bold border border-accent-purple/20">U</div>
+<div class="w-10 h-10 rounded bg-accent-pink/70 flex items-center justify-center text-xs font-bold border border-accent-pink/20 text-white">I</div>
+<div class="w-10 h-10 rounded bg-accent-purple/60 flex items-center justify-center text-xs font-bold border border-accent-purple/20 text-white">O</div>
+<div class="w-10 h-10 rounded bg-accent-blue/40 flex items-center justify-center text-xs font-bold border border-accent-blue/20">P</div>
+</div>
+<div class="flex gap-2 justify-center ml-4">
+<div class="w-10 h-10 rounded bg-accent-pink/90 flex items-center justify-center text-xs font-bold border border-accent-pink/20 text-white shadow-lg shadow-accent-pink/20">A</div>
+<div class="w-10 h-10 rounded bg-accent-purple/70 flex items-center justify-center text-xs font-bold border border-accent-purple/20 text-white">S</div>
+<div class="w-10 h-10 rounded bg-accent-pink/60 flex items-center justify-center text-xs font-bold border border-accent-pink/20 text-white">D</div>
+<div class="w-10 h-10 rounded bg-accent-blue/80 flex items-center justify-center text-xs font-bold border border-accent-blue/20 text-white">F</div>
+<div class="w-10 h-10 rounded bg-accent-purple/40 flex items-center justify-center text-xs font-bold border border-accent-purple/20">G</div>
+<div class="w-10 h-10 rounded bg-accent-blue/50 flex items-center justify-center text-xs font-bold border border-accent-blue/20">H</div>
+<div class="w-10 h-10 rounded bg-accent-pink/30 flex items-center justify-center text-xs font-bold border border-accent-pink/20">J</div>
+<div class="w-10 h-10 rounded bg-accent-purple/40 flex items-center justify-center text-xs font-bold border border-accent-purple/20">K</div>
+<div class="w-10 h-10 rounded bg-accent-blue/30 flex items-center justify-center text-xs font-bold border border-accent-blue/20">L</div>
+</div>
+<div class="flex gap-2 justify-center ml-8">
+<div class="w-10 h-10 rounded bg-accent-blue/20 flex items-center justify-center text-xs font-bold border border-accent-blue/20">Z</div>
+<div class="w-10 h-10 rounded bg-accent-purple/30 flex items-center justify-center text-xs font-bold border border-accent-purple/20">X</div>
+<div class="w-10 h-10 rounded bg-accent-pink/50 flex items-center justify-center text-xs font-bold border border-accent-pink/20">C</div>
+<div class="w-10 h-10 rounded bg-accent-blue/40 flex items-center justify-center text-xs font-bold border border-accent-blue/20">V</div>
+<div class="w-10 h-10 rounded bg-accent-purple/30 flex items-center justify-center text-xs font-bold border border-accent-purple/20">B</div>
+<div class="w-10 h-10 rounded bg-accent-pink/20 flex items-center justify-center text-xs font-bold border border-accent-pink/20">N</div>
+<div class="w-10 h-10 rounded bg-accent-blue/20 flex items-center justify-center text-xs font-bold border border-accent-blue/20">M</div>
+</div>
+<div class="flex gap-2 justify-center">
+<div class="w-48 h-10 rounded bg-accent-pink/100 flex items-center justify-center text-xs font-bold border border-accent-pink/40 text-white shadow-xl shadow-accent-pink/30">SPACE</div>
+</div>
+</div>
+<div class="flex justify-center gap-4 mt-2">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-accent-blue/20"></div>
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Low Frequency</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-accent-pink"></div>
+<span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">High Frequency</span>
+</div>
+</div>
+</div>
+<div class="rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm border border-primary/10 flex flex-col gap-6">
+<h3 class="text-slate-900 dark:text-slate-100 text-xl font-bold">Finger Speed (CPM)</h3>
+<div class="flex flex-col gap-5">
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-xs font-bold text-slate-500 uppercase">
+<span>Left Index</span>
+<span th:text="${wpm * 5} + ' CPM'">420 CPM</span>
+</div>
+<div class="h-2 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+<div class="h-full bg-accent-blue rounded-full" style="width: 85%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-xs font-bold text-slate-500 uppercase">
+<span>Right Index</span>
+<span th:text="${wpm * 4.8} + ' CPM'">410 CPM</span>
+</div>
+<div class="h-2 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+<div class="h-full bg-accent-purple rounded-full" style="width: 82%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-xs font-bold text-slate-500 uppercase">
+<span>Middle Fingers</span>
+<span th:text="${wpm * 4.5} + ' CPM'">380 CPM</span>
+</div>
+<div class="h-2 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+<div class="h-full bg-accent-pink rounded-full" style="width: 76%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-xs font-bold text-slate-500 uppercase">
+<span>Pinkies</span>
+<span th:text="${wpm * 2.5} + ' CPM'">210 CPM</span>
+</div>
+<div class="h-2 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 45%"></div>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between text-xs font-bold text-slate-500 uppercase">
+<span>Thumbs</span>
+<span th:text="${wpm * 5.3} + ' CPM'">450 CPM</span>
+</div>
+<div class="h-2 w-full bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+<div class="h-full bg-emerald-500 rounded-full" style="width: 92%"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm border border-primary/10 flex flex-col gap-6">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div>
+<h3 class="text-slate-900 dark:text-slate-100 text-xl font-bold">Historical Performance</h3>
+<p class="text-slate-500 text-sm">WPM progression over the last 30 sessions</p>
+</div>
+<div class="flex gap-4">
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="text-sm font-medium text-slate-600 dark:text-slate-400">Current</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-3 h-3 rounded-full bg-slate-300"></div>
+<span class="text-sm font-medium text-slate-600 dark:text-slate-400">Previous</span>
+</div>
+</div>
+</div>
+<div class="h-[300px] w-full relative">
+<svg fill="none" height="100%" preserveaspectratio="none" viewbox="0 0 1000 300" width="100%" xmlns="http://www.w3.org/2000/svg">
+<path d="M0 250 L50 240 L100 220 L150 230 L200 180 L250 190 L300 150 L350 160 L400 130 L450 140 L500 100 L550 110 L600 80 L650 90 L700 60 L750 70 L800 40 L850 50 L900 20 L950 30 L1000 10" fill="none" stroke="#7b00ff" stroke-linecap="round" stroke-width="4"></path>
+<path d="M0 250 L50 240 L100 220 L150 230 L200 180 L250 190 L300 150 L350 160 L400 130 L450 140 L500 100 L550 110 L600 80 L650 90 L700 60 L750 70 L800 40 L850 50 L900 20 L950 30 L1000 10 V300 H0 Z" fill="url(#grad1)" opacity="0.1"></path>
+<path d="M0 280 L50 270 L100 260 L150 265 L200 240 L250 245 L300 230 L350 235 L400 220 L450 225 L500 200 L550 205 L600 190 L650 195 L700 180 L750 185 L800 170 L850 175 L900 160 L950 165 L1000 150" fill="none" stroke="#cbd5e1" stroke-dasharray="5,5" stroke-width="2"></path>
+<defs>
+<lineargradient id="grad1" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#7b00ff"></stop>
+<stop offset="100%" stop-color="#7b00ff" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+</svg>
+<div class="absolute bottom-0 left-0 w-full flex justify-between px-2 pt-4 border-t border-slate-100 dark:border-slate-700">
+<span class="text-[10px] font-bold text-slate-400 uppercase">Session 1</span>
+<span class="text-[10px] font-bold text-slate-400 uppercase">Session 15</span>
+<span class="text-[10px] font-bold text-slate-400 uppercase">Session 30</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm border border-primary/10">
+<h4 class="font-bold mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-rose-500">warning</span>
+                                Missed Key Distribution
+                            </h4>
+<div class="flex flex-wrap gap-2">
+<div class="px-4 py-2 bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 rounded-lg flex items-center gap-3">
+<span class="font-bold text-rose-600">P</span>
+<span class="text-xs text-rose-400">12%</span>
+</div>
+<div class="px-4 py-2 bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 rounded-lg flex items-center gap-3">
+<span class="font-bold text-rose-600">Q</span>
+<span class="text-xs text-rose-400">9%</span>
+</div>
+<div class="px-4 py-2 bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 rounded-lg flex items-center gap-3">
+<span class="font-bold text-rose-600">B</span>
+<span class="text-xs text-rose-400">7%</span>
+</div>
+<div class="px-4 py-2 bg-rose-50 dark:bg-rose-900/20 border border-rose-200 dark:border-rose-800 rounded-lg flex items-center gap-3">
+<span class="font-bold text-rose-600">Z</span>
+<span class="text-xs text-rose-400">5%</span>
+</div>
+</div>
+</div>
+<div class="rounded-xl p-6 bg-white dark:bg-slate-800 shadow-sm border border-primary/10">
+<h4 class="font-bold mb-4 flex items-center gap-2" th:if="${wpm >= 60}">
+<span class="material-symbols-outlined text-emerald-500">verified</span>
+                                Achievement Progress
+                            </h4>
+<h4 class="font-bold mb-4 flex items-center gap-2" th:if="${wpm < 60}">
+<span class="material-symbols-outlined text-emerald-500">pending</span>
+                                Achievement Progress
+                            </h4>
+<div class="flex items-center gap-4">
+<div class="size-12 rounded-full border-4 border-primary border-t-transparent flex items-center justify-center">
+<span class="text-xs font-black">78%</span>
+</div>
+<div>
+<p class="text-sm font-bold">100 WPM Club</p>
+<p class="text-xs text-slate-500">Maintain 100+ WPM for 2 minutes</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<footer class="mt-auto px-6 py-8 border-t border-primary/10 bg-white dark:bg-slate-900">
+<div class="flex flex-col md:flex-row justify-between items-center gap-4 text-slate-500 text-sm">
+<p>© 2024 TypeAnalytics Performance Engine. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Documentation</a>
+<a class="hover:text-primary transition-colors" href="/">Test Again</a>
+</div>
+</div>
+</footer>
+</div>
+</div>
+</body></html>
