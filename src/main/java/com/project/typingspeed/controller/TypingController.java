@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * ========================================================================================
@@ -135,27 +136,45 @@ public class TypingController {
             @RequestParam("originalText") String originalText,   // Comes from a hidden <input> in the form
             @RequestParam(value = "heatmapData", required = false, defaultValue = "{}") String heatmapData, // Optional JSON data
             @RequestParam(value = "timeElapsed", required = false, defaultValue = "60") int timeElapsed, // Early submit time
-            Model model) {
+            RedirectAttributes redirectAttributes) {             // Flash attributes for Post/Redirect/Get pattern
         
         // STEP 1: Calculate actual WPM based on characters typed and time elapsed
         int wpm = typingService.calculateWPM(typedText, timeElapsed);
 
         // STEP 2: Calculate accuracy by comparing typed text with original text
-        // Returns a percentage (e.g., 85.71)
         double accuracy = typingService.calculateAccuracy(typedText, originalText);
 
         // STEP 3: Update highest WPM if this is a new personal best
         typingService.updateHighestWpm(wpm);
 
-        // STEP 4: Add all results to the Model for Thymeleaf to render
-        model.addAttribute("paragraph", originalText);                    // Show the original text on results page
-        model.addAttribute("typedText", typedText);                       // Show what the user typed
-        model.addAttribute("wpm", wpm);                                   // Display WPM metric
-        model.addAttribute("accuracy", String.format("%.2f", accuracy));  // Format accuracy to 2 decimal places
-        model.addAttribute("highestWpm", typingService.getHighestWpm());  // Display highest score badge
-        model.addAttribute("heatmapData", heatmapData);                  // Pass keyboard heatmap data to JS
+        // STEP 4: Add all results to Flash Attributes so they survive the redirect
+        redirectAttributes.addFlashAttribute("paragraph", originalText);
+        redirectAttributes.addFlashAttribute("typedText", typedText);
+        redirectAttributes.addFlashAttribute("wpm", wpm);
+        redirectAttributes.addFlashAttribute("accuracy", String.format("%.2f", accuracy));
+        redirectAttributes.addFlashAttribute("highestWpm", typingService.getHighestWpm());
+        redirectAttributes.addFlashAttribute("heatmapData", heatmapData);
 
-        // Return the dashboard template. Spring looks for: src/main/resources/templates/dashboard.html
+        // Redirect to a clean GET route to prevent form resubmission popups
+        return "redirect:/dashboard";
+    }
+
+    // =====================================================================================
+    // GET "/dashboard" — DISPLAY THE RESULTS PAGE CLEANLY
+    // =====================================================================================
+    /**
+     * Handles GET requests to /dashboard.
+     * This is the 'Get' part of the Post/Redirect/Get pattern.
+     */
+    @GetMapping("/dashboard")
+    public String showDashboard(Model model) {
+        // If there is no WPM attribute, it means the user refreshed the page directly
+        // or navigated here without taking the test. Let's redirect them back home!
+        if (!model.containsAttribute("wpm")) {
+            return "redirect:/";
+        }
+        
+        // Return the dashboard template to render the flash attributes.
         return "dashboard";
     }
 }
