@@ -43,7 +43,7 @@
     </div>
     <div class="flex items-center gap-6">
         <nav class="hidden md:flex items-center gap-8">
-            <a class="text-sm font-medium text-primary border-b-2 border-primary pb-1" href="/">Test</a>
+            <a class="text-sm font-medium text-primary border-b-2 border-primary pb-1" href="/test">Test</a>
         </nav>
         <button id="darkModeToggle" type="button" class="flex items-center justify-center rounded-lg h-10 w-10 bg-primary/10 text-primary hover:bg-primary/20 transition-all">
             <span class="material-symbols-outlined text-[20px]" id="darkModeIcon">dark_mode</span>
@@ -116,7 +116,7 @@
         </div>
         
         <div class="flex items-center gap-4">
-            <a href="/" th:if="${wpm != null}" class="flex items-center gap-2 px-6 py-3 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+            <a href="/test" th:if="${wpm != null}" class="flex items-center gap-2 px-6 py-3 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
                 <span class="material-symbols-outlined text-[20px]">refresh</span>
                 Try Again
             </a>

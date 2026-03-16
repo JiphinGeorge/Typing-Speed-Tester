@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#7b00ff",
+                        "background-light": "#f7f5f8",
+                        "background-dark": "#190f23",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<title>XcelerType | Loading</title>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased">
+<div class="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden">
+<!-- Background Decor -->
+<div class="absolute inset-0 z-0 opacity-20 pointer-events-none">
+<div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/20 blur-[120px]"></div>
+<div class="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 blur-[120px]"></div>
+</div>
+<!-- Main Container -->
+<div class="relative z-10 flex flex-col items-center max-w-[480px] w-full px-6">
+<!-- Logo Section -->
+<div class="flex flex-col items-center gap-6 mb-12">
+<div class="size-20 bg-primary rounded-2xl flex items-center justify-center shadow-2xl shadow-primary/30">
+<svg class="text-white size-12" fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path clip-rule="evenodd" d="M24 18.4228L42 11.475V34.3663C42 34.7796 41.7457 35.1504 41.3601 35.2992L24 42V18.4228Z" fill="currentColor" fill-rule="evenodd"></path>
+<path clip-rule="evenodd" d="M24 8.18819L33.4123 11.574L24 15.2071L14.5877 11.574L24 8.18819ZM9 15.8487L21 20.4805V37.6263L9 32.9945V15.8487ZM27 37.6263V20.4805L39 15.8487V32.9945L27 37.6263ZM25.354 2.29885C24.4788 1.98402 23.5212 1.98402 22.646 2.29885L4.98454 8.65208C3.7939 9.08038 3 10.2097 3 11.475V34.3663C3 36.0196 4.01719 37.5026 5.55962 38.098L22.9197 44.7987C23.6149 45.0671 24.3851 45.0671 25.0803 44.7987L42.4404 38.098C43.9828 37.5026 45 36.0196 45 34.3663V11.475C45 10.2097 44.2061 9.08038 43.0155 8.65208L25.354 2.29885Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h1 class="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">XcelerType</h1>
+</div>
+<!-- Progress Section -->
+<div class="w-full space-y-4">
+<div class="flex items-end justify-between px-1">
+<div class="flex flex-col gap-1">
+<span class="text-xs font-semibold uppercase tracking-wider text-primary/80 dark:text-primary/90">System Status</span>
+<p class="text-sm font-medium text-slate-600 dark:text-slate-400">Optimizing workspace assets...</p>
+</div>
+<span id="progress-text" class="text-lg font-bold text-slate-900 dark:text-slate-100">0%</span>
+</div>
+<div class="h-3 w-full bg-primary/10 dark:bg-primary/5 rounded-full overflow-hidden border border-primary/5">
+<div id="progress-bar" class="h-full bg-gradient-to-r from-primary to-blue-500 rounded-full transition-all duration-300" style="width: 0%;"></div>
+</div>
+<div class="flex items-center gap-2 px-1">
+<span class="material-symbols-outlined text-sm text-primary">sync</span>
+<span class="text-xs font-normal text-slate-500 dark:text-slate-500 italic">Syncing custom dictionary and layouts</span>
+</div>
+</div>
+<!-- Illustration/Placeholder -->
+<div class="mt-16 w-full max-w-[320px]">
+<div class="aspect-video rounded-xl bg-white dark:bg-slate-800/50 shadow-sm border border-slate-200 dark:border-slate-700 flex items-center justify-center p-4">
+<style>
+.typing-demo {
+  width: 12ch;
+  animation: typing 2.5s steps(12), blink .5s step-end infinite alternate;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 3px solid #7b00ff;
+  font-family: monospace;
+  font-size: 2em;
+  font-weight: bold;
+}
+@keyframes typing {
+  from { width: 0 }
+}
+@keyframes blink {
+  50% { border-color: transparent }
+}
+</style>
+<div class="typing-demo text-slate-800 dark:text-slate-100">XcelerType..</div>
+</div>
+</div>
+<!-- Tip of the Day Footer -->
+<div class="mt-16 flex flex-col items-center text-center gap-3">
+<div class="px-4 py-1.5 rounded-full bg-primary/5 dark:bg-primary/10 border border-primary/10">
+<span class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Pro Tip</span>
+</div>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed px-4">
+                Tip: Keep your fingers on the <span class="font-semibold text-slate-900 dark:text-slate-200">home row</span> for maximum efficiency and reduced hand fatigue.
+            </p>
+</div>
+</div>
+<!-- Navigation Mock (Hidden/Minimalist) -->
+<div class="absolute bottom-8 left-0 right-0 flex justify-center gap-6 text-[10px] font-medium uppercase tracking-widest text-slate-400 dark:text-slate-600">
+<a class="hover:text-primary transition-colors" href="#">Documentation</a>
+<span>•</span>
+<a class="hover:text-primary transition-colors" href="#">Support</a>
+<span>•</span>
+<a class="hover:text-primary transition-colors" href="#">v2.4.0</a>
+</div>
+<script>
+    // Simulate loading progress bar and redirect
+    document.addEventListener("DOMContentLoaded", () => {
+        const progressBar = document.getElementById("progress-bar");
+        const progressText = document.getElementById("progress-text");
+        let percent = 0;
+        
+        const interval = setInterval(() => {
+            percent += Math.floor(Math.random() * 15) + 5;
+            if (percent > 100) percent = 100;
+            
+            if (progressBar) progressBar.style.width = percent + '%';
+            if (progressText) progressText.innerText = percent + '%';
+            
+            if (percent === 100) {
+                clearInterval(interval);
+                setTimeout(() => {
+                    window.location.href = '/test';
+                }, 600); // Wait a tiny bit fully loaded before redirect
+            }
+        }, 200);
+    });
+</script>
+</body></html>
