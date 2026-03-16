@@ -137,19 +137,12 @@
 <div class="px-4 py-1.5 rounded-full bg-primary/5 dark:bg-primary/10 border border-primary/10">
 <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Pro Tip</span>
 </div>
-<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed px-4">
-                Tip: Keep your fingers on the <span class="font-semibold text-slate-900 dark:text-slate-200">home row</span> for maximum efficiency and reduced hand fatigue.
-            </p>
+<p id="pro-tip-text" class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed px-4 max-w-md">
+    <!-- Random tip injected here -->
+</p>
 </div>
 </div>
-<!-- Navigation Mock (Hidden/Minimalist) -->
-<div class="absolute bottom-8 left-0 right-0 flex justify-center gap-6 text-[10px] font-medium uppercase tracking-widest text-slate-400 dark:text-slate-600">
-<span class="hover:text-primary transition-colors cursor-pointer">Documentation</span>
-<span>•</span>
-<span class="hover:text-primary transition-colors cursor-pointer">Support</span>
-<span>•</span>
-<span class="hover:text-primary transition-colors cursor-pointer">v2.4.0</span>
-</div>
+<!-- Navigation Mock (Removed) -->
 </div>
 
 <!-- Main Navigation -->
@@ -245,6 +238,24 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
+        // --- Random Pro Tip Logic ---
+        const proTips = [
+            "Keep your fingers on the <span class='font-semibold text-slate-900 dark:text-slate-200'>home row</span> (ASDF and JKL;) for maximum efficiency.",
+            "Focus completely on <span class='font-semibold text-slate-900 dark:text-slate-200'>accuracy</span> first. Once you stop making mistakes, speed naturally follows.",
+            "Look purely at the <span class='font-semibold text-slate-900 dark:text-slate-200'>screen</span>, not your hands. This builds true muscle memory.",
+            "Sit up straight with both feet flat on the floor to maintain <span class='font-semibold text-slate-900 dark:text-slate-200'>posture</span> and prevent pain.",
+            "Hit the spacebar solely with the thumb of your <span class='font-semibold text-slate-900 dark:text-slate-200'>non-dominant hand</span> to save movement.",
+            "Use the <span class='font-semibold text-slate-900 dark:text-slate-200'>opposite shift key</span>. For instance, hold Right Shift to capitalize 'A'.",
+            "Establish a <span class='font-semibold text-slate-900 dark:text-slate-200'>steady rhythm</span> rather than typing in short, frantic bursts.",
+            "Take regular breaks! Resting your hands prevents cramping and <span class='font-semibold text-slate-900 dark:text-slate-200'>repetitive strain</span>."
+        ];
+        
+        const tipElement = document.getElementById("pro-tip-text");
+        if (tipElement) {
+            const randomTip = proTips[Math.floor(Math.random() * proTips.length)];
+            tipElement.innerHTML = "Tip: " + randomTip;
+        }
+
         // --- Loading Overlay Logic ---
         const loadingOverlay = document.getElementById("loading-overlay");
         const progressBar = document.getElementById("progress-bar");
@@ -253,8 +264,8 @@
         
         if (loadingOverlay) {
             const interval = setInterval(() => {
-                // Slower increment for a realistic loading feel
-                percent += Math.floor(Math.random() * 8) + 1;
+                // Faster increment to complete in ~3 seconds total
+                percent += Math.floor(Math.random() * 10) + 5;
                 if (percent > 100) percent = 100;
                 
                 if (progressBar) progressBar.style.width = percent + '%';
@@ -269,9 +280,9 @@
                             // Auto-focus typing field nicely
                             document.getElementById("typedText").focus();
                         }, 500); // Wait for opacity transition
-                    }, 800); // Wait a full second at 100% to finish admiring the 3D cube
+                    }, 500); // Wait half a second at 100%
                 }
-            }, 300); // 300ms chunks makes it significantly slower (around 3-4s total load)
+            }, 180); // 180ms chunks makes it significantly faster (~3s total load)
         }
 
         const typedTextArea = document.getElementById("typedText");
