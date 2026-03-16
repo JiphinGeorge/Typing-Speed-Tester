@@ -20,9 +20,14 @@ Key features:
   - Character-by-character live highlighting (green = correct, red = incorrect)
   - Keypress frequency heatmap rendered on a visual keyboard layout
   - 60-Second Auto-Submit Timer
+  - Enter Key Quick Submit for instant test completion
   - Working Dark/Light Mode toggle persisting via localStorage
+  - Animated 3D CSS Cube Loading Overlay on every page refresh
+  - Randomized Pro Tips displayed during loading
+  - Post/Redirect/Get (PRG) pattern prevents form resubmission warnings
   - Highest WPM score tracking (persists in-memory as long as the server runs)
   - Randomized paragraphs on every page load
+  - Gradient-themed logo and branding across all pages
 
 
 ================================================================================
