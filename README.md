@@ -1,14 +1,14 @@
-# Xtype Tester
+# XcelerType
 
-![Xtype Tester Heatmap](file:///C:/Users/asus/.gemini/antigravity/brain/82700e11-b46c-45cd-9232-6388413607ea/screenshot_dashboard_1772566908859.png)
+![XcelerType Heatmap](file:///C:/Users/asus/.gemini/antigravity/brain/82700e11-b46c-45cd-9232-6388413607ea/screenshot_dashboard_1772566908859.png)
 
 A dynamic, minimalist Spring Boot web application designed to track and improve your keyboard typing speed and accuracy in real-time. Built specifically around a clean MVC architecture under Java 21, the application requires absolutely no database setup to operate out of the box.
 
 ## Features
 
 - **Character-Level Accuracy Tracking:** The application tracks your typing live, character by character. Correct letters glow a vibrant green, while typos immediately flag a bold red indicator.
-- **Dynamic Text Generation:** You will never type the exact same text sequentially! Xtype Tester selects an unpredictable paragraph from a core rotation of classic pangrams and challenging texts on each refresh.
-- **Keypress Frequency Heatmap:** The application actively logs every single letter you press during your test. When you submit your results, Xtype Tester dynamically generates a gorgeous frequency heatmap, adjusting color intensity seamlessly based on your most-used (and abused) keys!
+- **Dynamic Text Generation:** You will never type the exact same text sequentially! XcelerType selects an unpredictable paragraph from a core rotation of classic pangrams and challenging texts on each refresh.
+- **Keypress Frequency Heatmap:** The application actively logs every single letter you press during your test. When you submit your results, XcelerType dynamically generates a gorgeous frequency heatmap, adjusting color intensity seamlessly based on your most-used (and abused) keys!
 - **Highest Score Tracking:** Your top Words Per Minute (WPM) score is preserved in application memory. The system tracks your peak performance and displays it prominently on your main page dashboard.
 
 ## Demonstration
@@ -25,7 +25,7 @@ A dynamic, minimalist Spring Boot web application designed to track and improve 
 
 ## Getting Started
 
-Because Xtype Tester intentionally omits a database configuration, launching the application is straightforward and immediate.
+Because XcelerType intentionally omits a database configuration, launching the application is straightforward and immediate.
 
 ### Prerequisites
 

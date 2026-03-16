@@ -1,31 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- ========================================================================================== -->
+<!-- POM.XML - Maven Project Object Model                                                       -->
+<!-- This is the heart of any Maven project. It defines the project's dependencies,             -->
+<!-- build configuration, and metadata. Maven reads this file to download libraries,            -->
+<!-- compile Java code, run tests, and package the application.                                 -->
+<!-- ========================================================================================== -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
+  <!-- ======================================================================================== -->
+  <!-- PARENT: Inheriting from Spring Boot Starter Parent                                       -->
+  <!-- This gives us pre-configured defaults for Spring Boot (plugin versions, dependency        -->
+  <!-- management, etc.). We don't need to manually specify versions for most Spring libraries.  -->
+  <!-- ======================================================================================== -->
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>3.2.4</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
+
+  <!-- ======================================================================================== -->
+  <!-- PROJECT METADATA                                                                         -->
+  <!-- groupId + artifactId + version uniquely identify this project in the Maven ecosystem.     -->
+  <!-- groupId: Usually your organization's domain in reverse (com.project)                     -->
+  <!-- artifactId: The name of this specific project (typingspeed)                              -->
+  <!-- version: Current version of the project (0.0.1-SNAPSHOT = development version)           -->
+  <!-- ======================================================================================== -->
   <groupId>com.project</groupId>
   <artifactId>typingspeed</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>Typing Speed Tester</name>
   <description>Typing Speed Tester Web Application</description>
+
+  <!-- ======================================================================================== -->
+  <!-- PROPERTIES                                                                               -->
+  <!-- java.version: Tells Spring Boot which Java version to compile with.                      -->
+  <!-- This must match the JDK installed on your system.                                        -->
+  <!-- ======================================================================================== -->
   <properties>
     <java.version>17</java.version>
   </properties>
+
+  <!-- ======================================================================================== -->
+  <!-- DEPENDENCIES                                                                             -->
+  <!-- These are the external libraries our project needs to function.                          -->
+  <!-- Maven automatically downloads these from the Maven Central Repository.                   -->
+  <!-- ======================================================================================== -->
   <dependencies>
+
+    <!-- spring-boot-starter-web:                                                               -->
+    <!-- Provides everything needed to build a web application:                                 -->
+    <!--   - Embedded Tomcat server (so we don't need to install a separate server)             -->
+    <!--   - Spring MVC framework (for @Controller, @GetMapping, @PostMapping, etc.)            -->
+    <!--   - JSON serialization support                                                         -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
+
+    <!-- spring-boot-starter-thymeleaf:                                                         -->
+    <!-- Provides the Thymeleaf templating engine for rendering HTML pages.                     -->
+    <!-- Thymeleaf allows us to use special attributes like th:text, th:if, th:action           -->
+    <!-- inside HTML files to dynamically inject Java data into the frontend.                   -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
     </dependency>
 
+    <!-- spring-boot-starter-test:                                                              -->
+    <!-- Provides testing libraries (JUnit 5, Mockito, Spring Test) for writing unit tests.     -->
+    <!-- scope=test means this dependency is ONLY available during testing, not in production.   -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -33,6 +79,11 @@
     </dependency>
   </dependencies>
 
+  <!-- ======================================================================================== -->
+  <!-- BUILD PLUGINS                                                                            -->
+  <!-- spring-boot-maven-plugin: Allows us to run the app with 'mvn spring-boot:run'           -->
+  <!-- and package it as an executable JAR with 'mvn package'.                                  -->
+  <!-- ======================================================================================== -->
   <build>
     <plugins>
       <plugin>

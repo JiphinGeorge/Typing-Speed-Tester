@@ -1,0 +1,306 @@
+================================================================================
+           XcelerType - Project Working Document
+================================================================================
+
+This document explains how every part of the XcelerType application works,
+from the moment you start the server to the moment you see your typing results.
+It is intended for students, reviewers, and contributors to easily understand
+the full flow of the project without needing to read every line of code.
+
+
+================================================================================
+1. WHAT IS XcelerType?
+================================================================================
+
+XcelerType is a web-based Typing Speed Tester built with Java and Spring Boot.
+It lets users practice their typing by presenting a randomized paragraph and
+then measuring Words Per Minute (WPM) and Accuracy when the test is submitted.
+
+Key features:
+  - Character-by-character live highlighting (green = correct, red = incorrect)
+  - Keypress frequency heatmap rendered on a visual keyboard layout
+  - Highest WPM score tracking (persists in-memory as long as the server runs)
+  - Randomized paragraphs on every page load
+
+
+================================================================================
+2. TECHNOLOGY STACK
+================================================================================
+
+  Component        | Technology           | Purpose
+  -----------------+----------------------+-----------------------------------------
+  Language         | Java 21              | Core backend language
+  Framework        | Spring Boot          | Auto-configures web server, MVC, DI, etc.
+  Build Tool       | Maven                | Manages dependencies, builds, and runs
+  Template Engine  | Thymeleaf            | Renders dynamic HTML on the server side
+  Styling          | Tailwind CSS (CDN)   | Utility-first CSS framework for the UI
+  Client Logic     | Vanilla JavaScript   | Handles highlighting and heatmap tracking
+  Database         | None                 | All state is held in-memory (no DB)
+
+
+================================================================================
+3. PROJECT STRUCTURE
+================================================================================
+
+  Typing Speed Tester/
+  ├── pom.xml                              -- Maven config: dependencies & build
+  ├── README.md                            -- GitHub documentation
+  ├── LICENSE                              -- MIT License
+  └── src/main/
+      ├── java/com/project/typingspeed/
+      │   ├── TypingSpeedApplication.java  -- Entry point (main method)
+      │   ├── controller/
+      │   │   └── TypingController.java    -- Handles HTTP routes (GET /, POST /result)
+      │   └── service/
+      │       └── TypingService.java       -- Business logic (WPM, Accuracy, High Score)
+      └── resources/
+          ├── application.properties       -- Server configuration
+          └── templates/
+              ├── index.html               -- The main typing test page
+              └── dashboard.html           -- The results page with heatmap
+
+
+================================================================================
+4. MVC ARCHITECTURE EXPLAINED
+================================================================================
+
+XcelerType follows the Model-View-Controller (MVC) design pattern:
+
+  ┌──────────┐       ┌──────────────────┐       ┌──────────────┐
+  │   VIEW   │ <---> │   CONTROLLER     │ <---> │   SERVICE    │
+  │ (HTML)   │       │ (TypingController)│       │ (TypingService)│
+  └──────────┘       └──────────────────┘       └──────────────┘
+    index.html         Routes requests            Calculates WPM,
+    dashboard.html     Passes data between        Accuracy, and
+                       View and Service           tracks High Score
+
+  MODEL = The data itself (wpm, accuracy, paragraph, highestWpm, heatmapData)
+          passed between Controller and View using Spring's Model object.
+
+  VIEW  = Thymeleaf HTML templates. They receive data from the Model and render
+          it into the page. Example: th:text="${wpm}" inserts the WPM value.
+
+  CONTROLLER = Java class annotated with @Controller. It maps URLs to methods,
+               calls the Service for calculations, and decides which View to show.
+
+  SERVICE = Java class annotated with @Service. Contains pure business logic
+            with no knowledge of HTTP or HTML. Makes the code testable and clean.
+
+
+================================================================================
+5. COMPLETE APPLICATION FLOW (Step by Step)
+================================================================================
+
+--- PHASE 1: STARTUP ---
+
+  1. User runs: mvn spring-boot:run
+  2. Maven compiles the Java code and starts the Spring Boot application
+  3. Spring Boot initializes:
+     a. Creates an embedded Tomcat web server on port 8080
+     b. Scans the com.project.typingspeed package for annotated classes
+     c. Finds @Controller (TypingController) and @Service (TypingService)
+     d. Creates exactly ONE instance of each (singleton pattern)
+     e. Injects TypingService into TypingController via constructor
+  4. The server is now ready at http://localhost:8080/
+
+--- PHASE 2: USER VISITS THE HOME PAGE ---
+
+  1. User opens http://localhost:8080/ in their browser
+  2. Browser sends an HTTP GET request to "/"
+  3. Spring matches this to TypingController.showTypingPage() [@GetMapping("/")]
+  4. The method:
+     a. Picks a random paragraph from the PREDEFINED_PARAGRAPHS array
+     b. Adds it to the Model as "paragraph"
+     c. Adds the current highestWpm to the Model
+     d. Returns the string "index"
+  5. Thymeleaf finds templates/index.html and renders it:
+     a. ${paragraph} is replaced with the actual paragraph text
+     b. ${highestWpm} is replaced with the current high score
+  6. The rendered HTML is sent back to the browser
+  7. JavaScript executes on page load:
+     a. Reads the paragraph from a hidden <input> field
+     b. Splits it into individual CHARACTERS
+     c. Wraps each character in a <span> tag for highlighting
+     d. Attaches an "input" event listener to the textarea
+     e. Attaches a "keydown" event listener to track key frequencies
+
+--- PHASE 3: USER TYPES ---
+
+  As the user types each character:
+
+  1. The "input" event fires on every keystroke
+  2. JavaScript compares each typed character against the original:
+     - MATCH    → The character span turns GREEN (text-primary, font-bold)
+     - MISMATCH → The character span turns RED (text-rose-500, bg-rose-500/20)
+     - CURRENT  → The next untyped character gets a GRAY cursor highlight
+     - FUTURE   → All remaining characters stay muted gray
+
+  3. Simultaneously, the "keydown" event tracks every key pressed:
+     - Only A-Z letters and SPACE are counted
+     - Each key's frequency is stored in a JavaScript object: {"A": 5, "E": 12, ...}
+     - This object is serialized to JSON and written to a hidden <input> field
+
+--- PHASE 4: USER SUBMITS THE TEST ---
+
+  1. User clicks "Submit Speed Test"
+  2. Browser sends an HTTP POST request to "/result" with form data:
+     - typedText:    the user's input from the textarea
+     - originalText: the original paragraph from the hidden input
+     - heatmapData:  the JSON string of keypress frequencies
+
+  3. Spring matches this to TypingController.processTypingResult()
+     [@PostMapping("/result")]
+
+  4. The Controller calls the Service layer:
+
+     a. typingService.calculateWPM(typedText)
+        - Splits typed text by whitespace
+        - Counts the words
+        - Returns word count as WPM (assumes 1-minute test)
+
+     b. typingService.calculateAccuracy(typedText, originalText)
+        - Splits both texts into word arrays
+        - Compares word-by-word at matching positions
+        - Returns: (correct words / total original words) × 100
+
+     c. typingService.updateHighestWpm(wpm)
+        - Compares current WPM against the stored highest
+        - Updates if the current score is higher
+
+  5. All results are added to the Model:
+     - wpm, accuracy, highestWpm, heatmapData, paragraph, typedText
+
+  6. Returns "dashboard" → Thymeleaf renders templates/dashboard.html
+
+--- PHASE 5: RESULTS DASHBOARD ---
+
+  1. dashboard.html displays three primary metric cards:
+     - WPM (big number in primary green)
+     - Accuracy (percentage in purple)
+     - Highest Score (with a trophy icon, in amber/gold)
+
+  2. Below the metrics, the Keypress Frequency Heatmap is rendered:
+     a. A hidden <div> holds the heatmapData JSON (using th:data-heatmap)
+     b. JavaScript parses the JSON on page load
+     c. It finds the MAXIMUM frequency across all keys
+     d. For each key on the visual keyboard layout:
+        - Calculates intensity = frequency / maxFrequency
+        - intensity > 0.7  → SOLID PRIMARY color (high usage)
+        - intensity > 0.3  → MEDIUM PRIMARY/60 color
+        - intensity > 0    → LIGHT PRIMARY/20 color
+        - intensity == 0   → Default gray (key was never pressed)
+
+  3. A "Restart Test" button links back to "/" for a new test
+
+
+================================================================================
+6. KEY ALGORITHMS
+================================================================================
+
+--- WPM CALCULATION ---
+
+  Formula: WPM = Number of words typed (assuming a 1-minute test)
+
+  Code:
+    String[] words = typedText.trim().split("\\s+");
+    return words.length;
+
+  Example:
+    Input:  "The quick brown fox"
+    Split:  ["The", "quick", "brown", "fox"]
+    Result: 4 WPM
+
+--- ACCURACY CALCULATION ---
+
+  Formula: Accuracy = (Correct Words / Total Original Words) × 100
+
+  Code:
+    for (int i = 0; i < minLen; i++) {
+        if (typedWords[i].equals(originalWords[i])) {
+            correctWords++;
+        }
+    }
+    return ((double) correctWords / originalWords.length) * 100;
+
+  Example:
+    Original: "The quick brown fox"  → ["The", "quick", "brown", "fox"]
+    Typed:    "The quik brown fox"   → ["The", "quik", "brown", "fox"]
+    Match:     ✓       ✗      ✓    ✓
+    Result:   3 / 4 = 75.00%
+
+--- HIGHEST SCORE TRACKING ---
+
+  Simple comparison: only update if the new score beats the record.
+
+    if (currentWpm > highestWpm) {
+        highestWpm = currentWpm;
+    }
+
+  This value lives as a field inside TypingService. Since Spring creates only
+  ONE instance (singleton), the value persists as long as the server runs.
+  It resets to 0 when the server restarts (no database).
+
+
+================================================================================
+7. FRONTEND JAVASCRIPT LOGIC
+================================================================================
+
+--- CHARACTER HIGHLIGHTING (index.html) ---
+
+  On page load:
+    1. Read the original paragraph from the hidden input
+    2. Split into individual characters: originalText.split('')
+    3. Wrap each character in a <span> with a unique ID: char-0, char-1, char-2...
+
+  On every keystroke (input event):
+    1. Get the current textarea value
+    2. Split into characters
+    3. Loop through every original character:
+       - If index < typed length AND characters match → GREEN
+       - If index < typed length AND characters differ → RED
+       - If index == typed length (cursor position)   → GRAY cursor highlight
+       - If index > typed length (not yet reached)    → Muted gray
+
+--- HEATMAP DATA COLLECTION (index.html) ---
+
+  On every keydown event:
+    1. Check if the key is a single character (A-Z or space)
+    2. Convert to uppercase
+    3. Increment the counter: keyFrequencies[key]++
+    4. Serialize the entire object to JSON
+    5. Write it to the hidden input field: heatmapData
+
+
+================================================================================
+8. HOW TO RUN THE PROJECT
+================================================================================
+
+  Prerequisites:
+    - Java JDK 21 installed
+    - Apache Maven installed
+
+  Steps:
+    1. Open a terminal in the project root directory
+    2. Run: mvn spring-boot:run
+    3. Wait for "Started TypingSpeedApplication" message
+    4. Open browser: http://localhost:8080/
+    5. Type the displayed paragraph and click "Submit Speed Test"
+    6. View your results on the dashboard!
+
+
+================================================================================
+9. IMPORTANT NOTES
+================================================================================
+
+  - No database is required. Everything runs in-memory.
+  - Highest score resets when the server is restarted.
+  - The heatmap only tracks A-Z letters and the space bar.
+  - Accuracy is word-based (not character-based) on the backend.
+  - The frontend highlighting is character-based for visual feedback.
+  - Random paragraphs are selected server-side on each page load.
+  - The application uses Tailwind CSS via CDN (no local installation needed).
+
+
+================================================================================
+                        END OF DOCUMENT
+================================================================================
