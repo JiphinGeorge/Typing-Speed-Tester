@@ -8,6 +8,8 @@ A dynamic, minimalist Spring Boot web application designed to track and improve 
 
 - **Character-Level Accuracy Tracking:** The application tracks your typing live, character by character. Correct letters glow a vibrant green, while typos immediately flag a bold red indicator.
 - **Dynamic Text Generation:** You will never type the exact same text sequentially! XcelerType selects an unpredictable paragraph from a core rotation of classic pangrams and challenging texts on each refresh.
+- **60-Second Auto-Submit Timer:** Built-in auto-counter triggers as soon as you type the first character.
+- **Night Mode Support:** Integrated working Light/Dark mode toggle caching preferences to local storage so styles persist effectively over sessions.
 - **Keypress Frequency Heatmap:** The application actively logs every single letter you press during your test. When you submit your results, XcelerType dynamically generates a gorgeous frequency heatmap, adjusting color intensity seamlessly based on your most-used (and abused) keys!
 - **Highest Score Tracking:** Your top Words Per Minute (WPM) score is preserved in application memory. The system tracks your peak performance and displays it prominently on your main page dashboard.
 

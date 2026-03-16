@@ -19,6 +19,8 @@ then measuring Words Per Minute (WPM) and Accuracy when the test is submitted.
 Key features:
   - Character-by-character live highlighting (green = correct, red = incorrect)
   - Keypress frequency heatmap rendered on a visual keyboard layout
+  - 60-Second Auto-Submit Timer
+  - Working Dark/Light Mode toggle persisting via localStorage
   - Highest WPM score tracking (persists in-memory as long as the server runs)
   - Randomized paragraphs on every page load
 
@@ -153,10 +155,10 @@ XcelerType follows the Model-View-Controller (MVC) design pattern:
 
   4. The Controller calls the Service layer:
 
-     a. typingService.calculateWPM(typedText)
-        - Splits typed text by whitespace
-        - Counts the words
-        - Returns word count as WPM (assumes 1-minute test)
+     a. typingService.calculateWPM(typedText, timeElapsed)
+        - Computes gross words (Total Typed Characters / 5.0)
+        - Computes time in minutes (timeElapsed / 60.0)
+        - Returns actual WPM even if test was submitted early
 
      b. typingService.calculateAccuracy(typedText, originalText)
         - Splits both texts into word arrays
@@ -199,16 +201,17 @@ XcelerType follows the Model-View-Controller (MVC) design pattern:
 
 --- WPM CALCULATION ---
 
-  Formula: WPM = Number of words typed (assuming a 1-minute test)
+  Formula: WPM = (Total characters typed / 5) / (Elapsed time in seconds / 60)
 
   Code:
-    String[] words = typedText.trim().split("\\s+");
-    return words.length;
+    double grossWords = typedText.length() / 5.0;
+    double minutes = timeElapsedSeconds / 60.0;
+    return (int) Math.round(grossWords / minutes);
 
   Example:
-    Input:  "The quick brown fox"
-    Split:  ["The", "quick", "brown", "fox"]
-    Result: 4 WPM
+    Input:  "The quick brown fox jumps" (25 characters)
+    Time:   60 seconds
+    Result: (25/5) / 1 = 5 WPM
 
 --- ACCURACY CALCULATION ---
 
