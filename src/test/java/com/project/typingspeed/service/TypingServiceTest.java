@@ -38,16 +38,15 @@ class TypingServiceTest {
      * TEST 1: Verify WPM calculation counts words correctly.
      *
      * SCENARIO:
-     *   Input:    "The quick brown fox jumps over the lazy dog."
-     *   Expected: 9 words → 9 WPM (assuming 1-minute test)
-     *
-     * The split("\\s+") should break the text into 9 separate words.
+     *   Input:    "The quick brown fox jumps over the lazy dog." (44 characters)
+     *   Time:     60 seconds
+     *   Expected: (44 / 5) / (60 / 60) = 8.8 -> 9 WPM
      */
     @Test
     void testCalculateWPM() {
         String typedText = "The quick brown fox jumps over the lazy dog.";
-        int wpm = typingService.calculateWPM(typedText);
-        assertEquals(9, wpm, "WPM should be the number of words typed");
+        int wpm = typingService.calculateWPM(typedText, 60);
+        assertEquals(9, wpm, "WPM should be the gross words (chars/5) typed per minute");
     }
 
     /**
