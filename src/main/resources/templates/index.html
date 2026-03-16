@@ -45,6 +45,9 @@
         <nav class="hidden md:flex items-center gap-8">
             <a class="text-sm font-medium text-primary border-b-2 border-primary pb-1" href="/">Test</a>
         </nav>
+        <button id="darkModeToggle" type="button" class="flex items-center justify-center rounded-lg h-10 w-10 bg-primary/10 text-primary hover:bg-primary/20 transition-all">
+            <span class="material-symbols-outlined text-[20px]" id="darkModeIcon">dark_mode</span>
+        </button>
     </div>
 </header>
 
@@ -55,6 +58,14 @@
     <!-- Typing Interface Form -->
     <form th:action="@{/result}" method="post" class="w-full flex flex-col relative py-4 px-2 group">
         
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-lg font-bold text-slate-700 dark:text-slate-300">Type the paragraph below:</h2>
+            <div class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                <span class="material-symbols-outlined text-primary">timer</span>
+                <span id="timer-display" class="font-mono text-xl font-bold text-slate-900 dark:text-slate-100">60s</span>
+            </div>
+        </div>
+
         <!-- Original Text Display (Character Highlighted) -->
         <div id="text-display" class="font-mono text-xl md:text-2xl text-slate-500 dark:text-slate-400 select-none mb-8 p-6 bg-slate-100 dark:bg-slate-800/50 rounded-xl leading-relaxed border border-slate-200 dark:border-slate-700 whitespace-pre-wrap">
             <!-- Words will be injected here by Javascript -->
@@ -76,7 +87,11 @@
             autofocus
         ></textarea>
         
-        <div class="mt-8 flex justify-end">
+        <div class="mt-8 flex justify-end gap-4">
+            <button type="button" onclick="window.location.reload();" class="flex items-center gap-2 px-8 py-4 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-300 dark:hover:bg-slate-700 transition-all shadow-lg hover:-translate-y-1">
+                <span class="material-symbols-outlined">restart_alt</span>
+                Reset
+            </button>
             <button type="submit" class="flex items-center gap-2 px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary-dark transition-all shadow-lg shadow-primary/20 hover:-translate-y-1">
                 <span class="material-symbols-outlined">bolt</span>
                 Submit Speed Test
@@ -160,8 +175,36 @@
         // Initial highlight setup
         updateHighlight();
         
-        // Listen to input events for character highlighting
-        typedTextArea.addEventListener("input", updateHighlight);
+        // Timer Logic
+        let timerStarted = false;
+        let timeLeft = 60;
+        let timerInterval;
+        const timerDisplay = document.getElementById("timer-display");
+        const typingForm = document.querySelector("form");
+
+        // Listen to input events for character highlighting and timer trigger
+        typedTextArea.addEventListener("input", (e) => {
+            if (!timerStarted && typedTextArea.value.length > 0) {
+                timerStarted = true;
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    timerDisplay.textContent = timeLeft + "s";
+                    
+                    if (timeLeft <= 10 && timeLeft > 0) {
+                        timerDisplay.classList.add("text-rose-500", "dark:text-rose-400");
+                        timerDisplay.classList.remove("text-slate-900", "dark:text-slate-100");
+                    }
+
+                    if (timeLeft === 0) {
+                        clearInterval(timerInterval);
+                        typedTextArea.disabled = true;
+                        timerDisplay.textContent = "0s";
+                        typingForm.submit();
+                    }
+                }, 1000);
+            }
+            updateHighlight();
+        });
         
         // --- Heatmap Data Collection Logic ---
         
@@ -180,6 +223,32 @@
             }
         });
     });
+
+    // Dark mode toggle functionality
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const darkModeIcon = document.getElementById('darkModeIcon');
+    
+    // Check initial state
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+        if (darkModeIcon) darkModeIcon.textContent = 'light_mode';
+    } else {
+        document.documentElement.classList.remove('dark');
+        if (darkModeIcon) darkModeIcon.textContent = 'dark_mode';
+    }
+
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            if (document.documentElement.classList.contains('dark')) {
+                localStorage.theme = 'dark';
+                if (darkModeIcon) darkModeIcon.textContent = 'light_mode';
+            } else {
+                localStorage.theme = 'light';
+                if (darkModeIcon) darkModeIcon.textContent = 'dark_mode';
+            }
+        });
+    }
 </script>
 
 </body>
