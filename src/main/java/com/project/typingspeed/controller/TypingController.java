@@ -134,11 +134,11 @@ public class TypingController {
             @RequestParam("typedText") String typedText,        // Comes from the <textarea> in the form
             @RequestParam("originalText") String originalText,   // Comes from a hidden <input> in the form
             @RequestParam(value = "heatmapData", required = false, defaultValue = "{}") String heatmapData, // Optional JSON data
+            @RequestParam(value = "timeElapsed", required = false, defaultValue = "60") int timeElapsed, // Early submit time
             Model model) {
         
-        // STEP 1: Calculate WPM using the service layer
-        // This counts the number of words the user typed
-        int wpm = typingService.calculateWPM(typedText);
+        // STEP 1: Calculate actual WPM based on characters typed and time elapsed
+        int wpm = typingService.calculateWPM(typedText, timeElapsed);
 
         // STEP 2: Calculate accuracy by comparing typed text with original text
         // Returns a percentage (e.g., 85.71)

@@ -65,27 +65,27 @@ public class TypingService {
      * Calculates Words Per Minute (WPM).
      *
      * HOW IT WORKS:
-     *   1. Takes the user's typed text as input
-     *   2. Splits it by whitespace (spaces, tabs, newlines) using regex "\\s+"
-     *   3. Counts the resulting words
-     *   4. Since we assume a 1-minute test, WPM = total word count
-     *
-     * EXAMPLE:
-     *   Input:  "The quick brown fox"
-     *   Split:  ["The", "quick", "brown", "fox"]
-     *   Result: 4 WPM
+     *   1. Takes the user's typed text and the time elapsed in seconds
+     *   2. Standard WPM formula: (Gross Characters / 5) / Time in Minutes
+     *   3. This works correctly even if the user submits the test early
      *
      * @param typedText - The text the user typed in the textarea
-     * @return the number of words typed (WPM for a 1-minute test)
+     * @param timeElapsedSeconds - The time taken in seconds (from the frontend)
+     * @return the calculated WPM
      */
-    public int calculateWPM(String typedText) {
-        // Guard clause: return 0 if input is null or empty
-        if (typedText == null || typedText.trim().isEmpty()) {
+    public int calculateWPM(String typedText, int timeElapsedSeconds) {
+        // Guard clause: return 0 if input is null or time is invalid
+        if (typedText == null || typedText.trim().isEmpty() || timeElapsedSeconds <= 0) {
             return 0;
         }
-        // Split by one or more whitespace characters and count the words
-        String[] words = typedText.trim().split("\\s+");
-        return words.length;
+        
+        // Standard WPM: characters / 5 = word count
+        double grossWords = typedText.length() / 5.0;
+        
+        // Convert seconds to minutes
+        double minutes = timeElapsedSeconds / 60.0;
+        
+        return (int) Math.round(grossWords / minutes);
     }
 
     // =====================================================================================
