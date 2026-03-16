@@ -79,25 +79,22 @@ public class TypingController {
     }
 
     // =====================================================================================
-    // GET "/" — DISPLAY THE LOADING PAGE
-    // =====================================================================================
-    @GetMapping("/")
-    public String showLoadingPage() {
-        return "loading";
-    }
-
-    // =====================================================================================
-    // GET "/test" — DISPLAY THE TYPING TEST PAGE
+    // GET "/" — DISPLAY THE TYPING TEST PAGE (with built-in Loading Overlay)
     // =====================================================================================
     /**
-     * Handles GET requests to /test.
+     * Handles GET requests to the root URL (http://localhost:8080/).
+     * This is the first thing users see when they open the application.
+     *
      * FLOW:
      *   1. Pick a random paragraph from the PREDEFINED_PARAGRAPHS array
      *   2. Add it to the Model (so Thymeleaf can access it as ${paragraph})
      *   3. Add the highest WPM score to the Model (for the footer stats bar)
      *   4. Return "index" → Thymeleaf resolves this to templates/index.html
+     *
+     * @param model - Spring's Model object to pass data from Java to the HTML template
+     * @return "index" - the name of the Thymeleaf template to render
      */
-    @GetMapping("/test")
+    @GetMapping("/")
     public String showTypingPage(Model model) {
         // Select a random paragraph using java.util.Random
         String randomParagraph = PREDEFINED_PARAGRAPHS[new java.util.Random().nextInt(PREDEFINED_PARAGRAPHS.length)];
@@ -174,7 +171,7 @@ public class TypingController {
         // If there is no WPM attribute, it means the user refreshed the page directly
         // or navigated here without taking the test. Let's redirect them back home!
         if (!model.containsAttribute("wpm")) {
-            return "redirect:/test";
+            return "redirect:/";
         }
         
         // Return the dashboard template to render the flash attributes.

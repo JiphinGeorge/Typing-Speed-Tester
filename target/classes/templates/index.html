@@ -33,6 +33,125 @@
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-200 pb-32">
+
+<!-- LOADING OVERLAY -->
+<div id="loading-overlay" class="fixed inset-0 z-[100] bg-background-light dark:bg-background-dark flex h-screen w-full flex-col items-center justify-center overflow-hidden transition-opacity duration-500">
+<!-- Background Decor -->
+<div class="absolute inset-0 z-0 opacity-20 pointer-events-none">
+<div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/20 blur-[120px]"></div>
+<div class="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] rounded-full bg-blue-500/10 blur-[120px]"></div>
+</div>
+<!-- Main Container -->
+<div class="relative z-10 flex flex-col items-center max-w-[480px] w-full px-6">
+<!-- Logo Section -->
+<div class="flex flex-col items-center gap-6 mb-12">
+<div class="relative size-24 bg-gradient-to-tr from-primary to-blue-500 rounded-[28px] flex items-center justify-center shadow-2xl shadow-primary/40 ring-4 ring-white/10 dark:ring-white/5 overflow-hidden group">
+    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20 mix-blend-overlay"></div>
+    <svg class="text-white size-12 relative z-10 transform group-hover:scale-110 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 15h8m-4-3v6" />
+    </svg>
+</div>
+<h1 class="text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-primary via-blue-500 to-purple-600">XcelerType</h1>
+</div>
+<!-- Progress Section -->
+<div class="w-full space-y-4">
+<div class="flex items-end justify-between px-1">
+<div class="flex flex-col gap-1">
+<span class="text-xs font-semibold uppercase tracking-wider text-primary/80 dark:text-primary/90">System Status</span>
+<p class="text-sm font-medium text-slate-600 dark:text-slate-400">Optimizing workspace assets...</p>
+</div>
+<span id="progress-text" class="text-lg font-bold text-slate-900 dark:text-slate-100">0%</span>
+</div>
+<div class="h-3 w-full bg-primary/10 dark:bg-primary/5 rounded-full overflow-hidden border border-primary/5">
+<div id="progress-bar" class="h-full bg-gradient-to-r from-primary to-blue-500 rounded-full transition-all duration-300" style="width: 0%;"></div>
+</div>
+<div class="flex items-center gap-2 px-1">
+<span class="material-symbols-outlined text-sm text-primary">sync</span>
+<span class="text-xs font-normal text-slate-500 dark:text-slate-500 italic">Syncing custom dictionary and layouts</span>
+</div>
+</div>
+<!-- 3D Cube Animation Container -->
+<div class="mt-16 w-full max-w-[320px]">
+<div class="aspect-video rounded-xl bg-white/50 dark:bg-slate-800/30 shadow-inner border border-slate-200/50 dark:border-slate-700/50 flex items-center justify-center p-4 overflow-hidden relative backdrop-blur-sm">
+<style>
+.cube-wrap {
+  width: 80px;
+  height: 80px;
+  perspective: 800px;
+  perspective-origin: 50% -100px;
+  margin-top: 20px;
+}
+.cube {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  animation: spin 3.5s infinite ease-in-out;
+}
+.cube-face {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  background: rgba(123, 0, 255, 0.75);
+  border: 2px solid rgba(255,255,255,0.4);
+  box-shadow: 0 0 20px rgba(123,0,255,0.4) inset, 0 0 20px rgba(59,130,246,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: monospace;
+  font-size: 32px;
+  font-weight: 900;
+  color: white;
+  text-shadow: 0 0 10px rgba(255,255,255,0.8);
+  border-radius: 8px;
+}
+.front  { transform: rotateY(  0deg) translateZ(40px); }
+.right  { transform: rotateY( 90deg) translateZ(40px); }
+.back   { transform: rotateY(180deg) translateZ(40px); }
+.left   { transform: rotateY(-90deg) translateZ(40px); }
+.top    { transform: rotateX( 90deg) translateZ(40px); background: rgba(59, 130, 246, 0.75); }
+.bottom { transform: rotateX(-90deg) translateZ(40px); background: rgba(59, 130, 246, 0.75); }
+
+@keyframes spin {
+  0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+  33% { transform: rotateX(180deg) rotateY(90deg) rotateZ(45deg); }
+  66% { transform: rotateX(270deg) rotateY(180deg) rotateZ(90deg); }
+  100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+}
+</style>
+<div class="cube-wrap">
+    <div class="cube">
+        <div class="cube-face front">W</div>
+        <div class="cube-face back">M</div>
+        <div class="cube-face right">P</div>
+        <div class="cube-face left">!</div>
+        <div class="cube-face top"></div>
+        <div class="cube-face bottom"></div>
+    </div>
+</div>
+</div>
+</div>
+<!-- Tip of the Day Footer -->
+<div class="mt-16 flex flex-col items-center text-center gap-3">
+<div class="px-4 py-1.5 rounded-full bg-primary/5 dark:bg-primary/10 border border-primary/10">
+<span class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary">Pro Tip</span>
+</div>
+<p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed px-4">
+                Tip: Keep your fingers on the <span class="font-semibold text-slate-900 dark:text-slate-200">home row</span> for maximum efficiency and reduced hand fatigue.
+            </p>
+</div>
+</div>
+<!-- Navigation Mock (Hidden/Minimalist) -->
+<div class="absolute bottom-8 left-0 right-0 flex justify-center gap-6 text-[10px] font-medium uppercase tracking-widest text-slate-400 dark:text-slate-600">
+<span class="hover:text-primary transition-colors cursor-pointer">Documentation</span>
+<span>•</span>
+<span class="hover:text-primary transition-colors cursor-pointer">Support</span>
+<span>•</span>
+<span class="hover:text-primary transition-colors cursor-pointer">v2.4.0</span>
+</div>
+</div>
+
 <!-- Main Navigation -->
 <header class="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800">
     <div class="flex items-center gap-3">
@@ -43,7 +162,7 @@
     </div>
     <div class="flex items-center gap-6">
         <nav class="hidden md:flex items-center gap-8">
-            <a class="text-sm font-medium text-primary border-b-2 border-primary pb-1" href="/test">Test</a>
+            <a class="text-sm font-medium text-primary border-b-2 border-primary pb-1" href="/">Test</a>
         </nav>
         <button id="darkModeToggle" type="button" class="flex items-center justify-center rounded-lg h-10 w-10 bg-primary/10 text-primary hover:bg-primary/20 transition-all">
             <span class="material-symbols-outlined text-[20px]" id="darkModeIcon">dark_mode</span>
@@ -116,7 +235,7 @@
         </div>
         
         <div class="flex items-center gap-4">
-            <a href="/test" th:if="${wpm != null}" class="flex items-center gap-2 px-6 py-3 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+            <a href="/" th:if="${wpm != null}" class="flex items-center gap-2 px-6 py-3 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
                 <span class="material-symbols-outlined text-[20px]">refresh</span>
                 Try Again
             </a>
@@ -126,6 +245,35 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
+        // --- Loading Overlay Logic ---
+        const loadingOverlay = document.getElementById("loading-overlay");
+        const progressBar = document.getElementById("progress-bar");
+        const progressText = document.getElementById("progress-text");
+        let percent = 0;
+        
+        if (loadingOverlay) {
+            const interval = setInterval(() => {
+                // Slower increment for a realistic loading feel
+                percent += Math.floor(Math.random() * 8) + 1;
+                if (percent > 100) percent = 100;
+                
+                if (progressBar) progressBar.style.width = percent + '%';
+                if (progressText) progressText.innerText = percent + '%';
+                
+                if (percent === 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loadingOverlay.classList.add("opacity-0");
+                        setTimeout(() => {
+                            loadingOverlay.classList.add("hidden");
+                            // Auto-focus typing field nicely
+                            document.getElementById("typedText").focus();
+                        }, 500); // Wait for opacity transition
+                    }, 800); // Wait a full second at 100% to finish admiring the 3D cube
+                }
+            }, 300); // 300ms chunks makes it significantly slower (around 3-4s total load)
+        }
+
         const typedTextArea = document.getElementById("typedText");
         const heatmapInput = document.getElementById("heatmapData");
         const originalTextInput = document.getElementById("originalText");
