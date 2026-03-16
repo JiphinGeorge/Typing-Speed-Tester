@@ -202,7 +202,7 @@
 
                     if (timeLeft === 0) {
                         clearInterval(timerInterval);
-                        typedTextArea.disabled = true;
+                        typedTextArea.readOnly = true;
                         timerDisplay.textContent = "0s";
                         typingForm.submit();
                     }
