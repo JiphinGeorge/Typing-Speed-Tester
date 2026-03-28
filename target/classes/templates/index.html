@@ -187,9 +187,9 @@
                 
                 <!-- Length Adjuster -->
                 <div class="flex items-center bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm p-1">
-                    <button type="button" onclick="window.location.href='/?length=1'" th:classappend="${length != null and length <= 1} ? 'bg-primary/10 text-primary' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'" class="px-3 py-1 rounded text-xs font-bold uppercase tracking-wider transition-colors">Short</button>
-                    <button type="button" onclick="window.location.href='/?length=3'" th:classappend="${length != null and length == 3} ? 'bg-primary/10 text-primary' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'" class="px-3 py-1 rounded text-xs font-bold uppercase tracking-wider transition-colors">Med</button>
-                    <button type="button" onclick="window.location.href='/?length=5'" th:classappend="${length != null and length >= 5} ? 'bg-primary/10 text-primary' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'" class="px-3 py-1 rounded text-xs font-bold uppercase tracking-wider transition-colors">Long</button>
+                    <button type="button" onclick="window.location.href='/?length=1&retest=true'" th:classappend="${length != null and length <= 1} ? 'bg-primary/10 text-primary' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'" class="px-3 py-1 rounded text-xs font-bold uppercase tracking-wider transition-colors">Short</button>
+                    <button type="button" onclick="window.location.href='/?length=3&retest=true'" th:classappend="${length != null and length == 3} ? 'bg-primary/10 text-primary' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'" class="px-3 py-1 rounded text-xs font-bold uppercase tracking-wider transition-colors">Med</button>
+                    <button type="button" onclick="window.location.href='/?length=5&retest=true'" th:classappend="${length != null and length >= 5} ? 'bg-primary/10 text-primary' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'" class="px-3 py-1 rounded text-xs font-bold uppercase tracking-wider transition-colors">Long</button>
                 </div>
 
                 <!-- Timer -->
