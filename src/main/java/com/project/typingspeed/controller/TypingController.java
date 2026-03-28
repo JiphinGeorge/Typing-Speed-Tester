@@ -136,6 +136,7 @@ public class TypingController {
             @RequestParam("originalText") String originalText,   // Comes from a hidden <input> in the form
             @RequestParam(value = "heatmapData", required = false, defaultValue = "{}") String heatmapData, // Optional JSON data
             @RequestParam(value = "timeElapsed", required = false, defaultValue = "60") int timeElapsed, // Early submit time
+            @RequestParam(value = "perfectWordsCount", required = false, defaultValue = "0") int perfectWordsCount, // New feature: Perfect words
             RedirectAttributes redirectAttributes) {             // Flash attributes for Post/Redirect/Get pattern
         
         // STEP 1: Calculate actual WPM based on characters typed and time elapsed
@@ -154,6 +155,7 @@ public class TypingController {
         redirectAttributes.addFlashAttribute("accuracy", String.format("%.2f", accuracy));
         redirectAttributes.addFlashAttribute("highestWpm", typingService.getHighestWpm());
         redirectAttributes.addFlashAttribute("heatmapData", heatmapData);
+        redirectAttributes.addFlashAttribute("perfectWordsCount", perfectWordsCount);
 
         // Redirect to a clean GET route to prevent form resubmission popups
         return "redirect:/dashboard";

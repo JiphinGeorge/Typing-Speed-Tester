@@ -191,6 +191,7 @@
         <input type="hidden" id="heatmapData" name="heatmapData" value="{}">
         <input type="hidden" id="originalText" name="originalText" th:value="${paragraph}">
         <input type="hidden" id="timeElapsed" name="timeElapsed" value="0">
+        <input type="hidden" id="perfectWordsCount" name="perfectWordsCount" value="0">
 
         <!-- User Input Area -->
         <textarea 
@@ -205,7 +206,7 @@
         ></textarea>
         
         <div class="mt-4 md:mt-6 flex justify-end gap-3 md:gap-4">
-            <button type="button" onclick="window.location.reload();" class="flex items-center gap-2 px-6 py-3 md:px-8 md:py-4 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-300 dark:hover:bg-slate-700 transition-all shadow-md hover:-translate-y-0.5">
+            <button type="button" onclick="window.location.href='/?retest=true';" class="flex items-center gap-2 px-6 py-3 md:px-8 md:py-4 bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-300 dark:hover:bg-slate-700 transition-all shadow-md hover:-translate-y-0.5">
                 <span class="material-symbols-outlined text-[20px]">restart_alt</span>
                 Reset
             </button>
@@ -232,7 +233,7 @@
         </div>
         
         <div class="flex items-center gap-4">
-            <a href="/" th:if="${wpm != null}" class="flex items-center gap-2 px-6 py-3 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+            <a href="/?retest=true" th:if="${wpm != null}" class="flex items-center gap-2 px-6 py-3 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
                 <span class="material-symbols-outlined text-[20px]">refresh</span>
                 Try Again
             </a>
@@ -261,13 +262,21 @@
         }
 
         // --- Loading Overlay Logic ---
+        const urlParams = new URLSearchParams(window.location.search);
+        const isRetest = urlParams.get('retest') === 'true';
+
         const loadingOverlay = document.getElementById("loading-overlay");
         const progressBar = document.getElementById("progress-bar");
         const progressText = document.getElementById("progress-text");
         let percent = 0;
         
         if (loadingOverlay) {
-            const interval = setInterval(() => {
+            if (isRetest) {
+                loadingOverlay.classList.add("hidden");
+                // Focus typing field immediately
+                setTimeout(() => document.getElementById("typedText").focus(), 100);
+            } else {
+                const interval = setInterval(() => {
                 // Faster increment to complete in ~3 seconds total
                 percent += Math.floor(Math.random() * 10) + 5;
                 if (percent > 100) percent = 100;
@@ -287,6 +296,7 @@
                     }, 500); // Wait half a second at 100%
                 }
             }, 180); // 180ms chunks makes it significantly faster (~3s total load)
+            }
         }
 
         const typedTextArea = document.getElementById("typedText");
@@ -298,6 +308,17 @@
         
         const originalText = originalTextInput.value;
         const chars = originalText.split('');
+        
+        // Track perfectly typed words
+        let erroredWords = new Set();
+        const wordIndices = [];
+        let wIdx = 0;
+        for (let i = 0; i < chars.length; i++) {
+            wordIndices.push(wIdx);
+            if (chars[i] === ' ') {
+                wIdx++;
+            }
+        }
         
         // Wrap each character in a span
         textDisplayDiv.innerHTML = chars.map((char, index) => 
@@ -324,6 +345,9 @@
                         span.classList.add("text-primary", "font-bold");
                     } else {
                         // Incorrectly typed
+                        if (index < wordIndices.length) {
+                             erroredWords.add(wordIndices[index]);
+                        }
                         span.classList.add("text-rose-500", "font-bold", "bg-rose-500/20", "px-0.5", "rounded");
                     }
                 } else if (index === typedChars.length) {
@@ -379,6 +403,19 @@
              clearInterval(timerInterval);
              // Ensure at least 1 second passed to avoid Infinity WPM
              if (timeElapsed === 0) timeElapsedInput.value = 1;
+             
+             // Calculate perfect words
+             const typedContent = typedTextArea.value;
+             const typedWords = typedContent.trim().split(/\s+/);
+             const originalWords = originalText.trim().split(/\s+/);
+             let perfectCount = 0;
+             const minLen = Math.min(typedWords.length, originalWords.length);
+             for (let i = 0; i < minLen; i++) {
+                 if (typedWords[i] === originalWords[i] && !erroredWords.has(i)) {
+                     perfectCount++;
+                 }
+             }
+             document.getElementById("perfectWordsCount").value = perfectCount;
         });
         
         // --- Heatmap Data Collection Logic ---
@@ -388,6 +425,14 @@
         
         // Only track valid standard characters (A-Z) and map spacing if needed
         typedTextArea.addEventListener("keydown", (e) => {
+            // Track backspaces for perfect word calculation
+            if (e.key === "Backspace") {
+                let currentIndex = typedTextArea.value.length - 1;
+                if (currentIndex >= 0 && currentIndex < wordIndices.length) {
+                    erroredWords.add(wordIndices[currentIndex]);
+                }
+            }
+
             // Check for Enter key to submit form
             if (e.key === "Enter") {
                 e.preventDefault(); // Prevent new line
