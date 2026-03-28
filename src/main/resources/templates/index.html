@@ -174,11 +174,29 @@
     <!-- Typing Interface Form -->
     <form th:action="@{/result}" method="post" class="w-full flex flex-col relative py-2 px-2 group">
         
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-base md:text-lg font-bold text-slate-700 dark:text-slate-300">Type the paragraph below:</h2>
-            <div class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
-                <span class="material-symbols-outlined text-primary">timer</span>
-                <span id="timer-display" class="font-mono text-xl font-bold text-slate-900 dark:text-slate-100">60s</span>
+        <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
+            <h2 class="text-base md:text-lg font-bold text-slate-700 dark:text-slate-300 w-full">Type the paragraph below:</h2>
+            
+            <div class="flex items-center gap-3 shrink-0">
+                <!-- Text Size Adjuster -->
+                <div class="flex items-center bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm p-1">
+                    <button type="button" onclick="adjustTextSize(-1)" class="px-3 py-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded text-sm font-bold text-slate-600 dark:text-slate-300 transition-colors">A-</button>
+                    <div class="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1"></div>
+                    <button type="button" onclick="adjustTextSize(1)" class="px-3 py-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded text-sm font-extrabold text-slate-600 dark:text-slate-300 transition-colors">A+</button>
+                </div>
+                
+                <!-- Length Adjuster -->
+                <div class="flex items-center bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm p-1">
+                    <button type="button" onclick="window.location.href='/?length=1'" th:classappend="${length != null and length <= 1} ? 'bg-primary/10 text-primary' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'" class="px-3 py-1 rounded text-xs font-bold uppercase tracking-wider transition-colors">Short</button>
+                    <button type="button" onclick="window.location.href='/?length=3'" th:classappend="${length != null and length == 3} ? 'bg-primary/10 text-primary' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'" class="px-3 py-1 rounded text-xs font-bold uppercase tracking-wider transition-colors">Med</button>
+                    <button type="button" onclick="window.location.href='/?length=5'" th:classappend="${length != null and length >= 5} ? 'bg-primary/10 text-primary' : 'hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'" class="px-3 py-1 rounded text-xs font-bold uppercase tracking-wider transition-colors">Long</button>
+                </div>
+
+                <!-- Timer -->
+                <div class="flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm">
+                    <span class="material-symbols-outlined text-primary">timer</span>
+                    <span id="timer-display" class="font-mono text-xl font-bold text-slate-900 dark:text-slate-100">60s</span>
+                </div>
             </div>
         </div>
 
@@ -241,8 +259,64 @@
     </div>
 </footer>
 
+<div class="hidden text-sm md:text-base text-base text-lg md:text-xl text-xl md:text-2xl text-2xl md:text-3xl text-3xl md:text-4xl text-4xl md:text-5xl md:p-6 p-4 p-8"></div>
+
 <script>
+    // --- Bfcaching Fix ---
+    // Forces a page reload to reset the timer if the user navigates hitting the browser back button
+    window.addEventListener("pageshow", function(event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+
     document.addEventListener("DOMContentLoaded", () => {
+        // --- Font Sizing Logic ---
+        let fontSizeLevel = Number(localStorage.getItem('fontSizeLevel')) || 2; 
+
+        const sizesDisplay = {
+            1: "text-sm md:text-base",
+            2: "text-lg md:text-xl", // default
+            3: "text-xl md:text-2xl",
+            4: "text-2xl md:text-3xl",
+            5: "text-3xl md:text-4xl"
+        };
+        const sizesInput = {
+            1: "text-base md:text-lg",
+            2: "text-xl md:text-2xl", // default
+            3: "text-2xl md:text-3xl",
+            4: "text-3xl md:text-4xl",
+            5: "text-4xl md:text-5xl"
+        };
+        
+        const textDisplayDivRoot = document.getElementById("text-display");
+        const typedTextAreaRoot = document.getElementById("typedText");
+
+        function applyFontSize(level) {
+            if(!textDisplayDivRoot || !typedTextAreaRoot) return;
+            // Strip core size injection classes
+            textDisplayDivRoot.className = textDisplayDivRoot.className.replace(/\btext-(sm|base|lg|xl|2xl|3xl|4xl|5xl)\b/g, '').replace(/\bmd:text-(sm|base|lg|xl|2xl|3xl|4xl|5xl)\b/g, '').replace(/\s+/g, ' ');
+            typedTextAreaRoot.className = typedTextAreaRoot.className.replace(/\btext-(sm|base|lg|xl|2xl|3xl|4xl|5xl)\b/g, '').replace(/\bmd:text-(sm|base|lg|xl|2xl|3xl|4xl|5xl)\b/g, '').replace(/\s+/g, ' ');
+            
+            // Add sizes mapped to level
+            textDisplayDivRoot.className += " " + sizesDisplay[level];
+            typedTextAreaRoot.className += " " + sizesInput[level];
+            
+            // Layout aesthetics for giant text
+            typedTextAreaRoot.className = typedTextAreaRoot.className.replace(/\b(?:md:p-6|p-4|p-8)\b/g, '').replace(/\s+/g, ' ');
+            if (level > 3) typedTextAreaRoot.className += " p-8";
+            else typedTextAreaRoot.className += " md:p-6 p-4";
+        }
+        
+        applyFontSize(fontSizeLevel);
+
+        window.adjustTextSize = (delta) => {
+            fontSizeLevel += delta;
+            if (fontSizeLevel < 1) fontSizeLevel = 1;
+            if (fontSizeLevel > 5) fontSizeLevel = 5;
+            localStorage.setItem('fontSizeLevel', fontSizeLevel);
+            applyFontSize(fontSizeLevel);
+        };
         // --- Random Pro Tip Logic ---
         const proTips = [
             "Keep your fingers on the <span class='font-semibold text-slate-900 dark:text-slate-200'>home row</span> (ASDF and JKL;) for maximum efficiency.",

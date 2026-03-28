@@ -95,19 +95,60 @@ public class TypingController {
      * @return "index" - the name of the Thymeleaf template to render
      */
     @GetMapping("/")
-    public String showTypingPage(Model model) {
-        // Select a random paragraph using java.util.Random
-        String randomParagraph = PREDEFINED_PARAGRAPHS[new java.util.Random().nextInt(PREDEFINED_PARAGRAPHS.length)];
-
+    public String showTypingPage(@RequestParam(value = "length", required = false, defaultValue = "1") int length, Model model) {
+        // Fetch a dynamic paragraph from a remote network API based on requested length
+        String dynamicParagraph = fetchDynamicParagraph(length);
+        
         // Add data to the Model — these become Thymeleaf variables in the HTML
-        // In index.html, ${paragraph} will be replaced with the actual paragraph text
-        model.addAttribute("paragraph", randomParagraph);
+        model.addAttribute("paragraph", dynamicParagraph);
 
         // Pass the highest WPM to display in the stats footer bar
         model.addAttribute("highestWpm", typingService.getHighestWpm());
+        
+        // Pass the requested length back to highlight the active UI option
+        model.addAttribute("length", length);
 
         // Return the template name. Spring looks for: src/main/resources/templates/index.html
         return "index";
+    }
+
+    /**
+     * Helper method to fetch quotes from DummyJSON and combine them into a paragraph.
+     * Uses RestTemplate for synchronous fetching. Falls back to static code if network fails.
+     */
+    private String fetchDynamicParagraph(int length) {
+        try {
+            org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+            // We fetch more quotes than we strictly need to ensure variety during shuffling
+            String url = "https://dummyjson.com/quotes?limit=" + Math.max(10, length * 3);
+            
+            java.util.Map response = restTemplate.getForObject(url, java.util.Map.class);
+            if (response != null && response.containsKey("quotes")) {
+                java.util.List<java.util.Map<String, Object>> quotes = 
+                        (java.util.List<java.util.Map<String, Object>>) response.get("quotes");
+                
+                // Randomize to get fresh variations every time
+                java.util.Collections.shuffle(quotes);
+                StringBuilder paragraph = new StringBuilder();
+                
+                // Build a paragraph using the requested network quotes (e.g. 1, 3, or 5 quotes)
+                for (int i = 0; i < Math.min(length, quotes.size()); i++) {
+                    paragraph.append(quotes.get(i).get("quote")).append(" ");
+                }
+                String finalPara = paragraph.toString().trim();
+                if (!finalPara.isEmpty()) {
+                    return finalPara;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("API Fetch failed, using static fallback. Error: " + e.getMessage());
+        }
+        
+        // Extreme Fallback if network is completely down
+        int size = PREDEFINED_PARAGRAPHS.length;
+        if (length <= 1) return PREDEFINED_PARAGRAPHS[0]; // Usually shortest
+        if (length >= 5) return PREDEFINED_PARAGRAPHS[size - 1]; // Usually longest
+        return PREDEFINED_PARAGRAPHS[new java.util.Random().nextInt(size)];
     }
 
     // =====================================================================================
