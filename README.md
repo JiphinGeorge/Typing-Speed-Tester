@@ -1,26 +1,22 @@
 # XcelerType
 
-![XcelerType Heatmap](file:///C:/Users/asus/.gemini/antigravity/brain/82700e11-b46c-45cd-9232-6388413607ea/screenshot_dashboard_1772566908859.png)
+![XcelerType Heatmap](assets/dashboard_results.png)
 
 A dynamic, minimalist Spring Boot web application designed to track and improve your keyboard typing speed and accuracy in real-time. Built specifically around a clean MVC architecture under Java 21, the application requires absolutely no database setup to operate out of the box.
 
 ## Features
 
 - **Character-Level Accuracy Tracking:** The application tracks your typing live, character by character. Correct letters glow a vibrant green, while typos immediately flag a bold red indicator.
-- **Dynamic Text Generation:** You will never type the exact same text sequentially! XcelerType selects an unpredictable paragraph from a core rotation of classic pangrams and challenging texts on each refresh.
-- **60-Second Auto-Submit Timer:** Built-in auto-counter triggers as soon as you type the first character.
-- **Enter Key Quick Submit:** Press Enter at any time to instantly submit your test.
-- **Night Mode Support:** Integrated working Light/Dark mode toggle caching preferences to local storage so styles persist effectively over sessions.
-- **Animated 3D Loading Overlay:** A premium CSS 3D rotating cube animation with a progress bar plays every time the page loads or is refreshed.
-- **Random Pro Tips:** The loading screen shows a different, meaningful typing pro tip on each page load.
-- **Keypress Frequency Heatmap:** The application actively logs every single letter you press during your test. When you submit your results, XcelerType dynamically generates a gorgeous frequency heatmap, adjusting color intensity seamlessly based on your most-used (and abused) keys!
-- **Highest Score Tracking:** Your top Words Per Minute (WPM) score is preserved in application memory. The system tracks your peak performance and displays it prominently on your main page dashboard.
+- **Dynamic Network Text Generation:** Forget static coding strings! XcelerType performs synchronous network calls to the public DummyJSON Quotes API to dynamically stitch together new layouts depending on the test size you prefer.
+- **Adjustable Test Lengths:** Cycle between Short (1 quote), Med (3 quotes), and Long (5 quotes) testing constraints on the fly.
+- **Responsive Typography Control:** A stateful `A- / A+` controller actively scales the test environment's UI parameters. Your sizing preferences are safely cached in the browser's Local Storage!
+- **Persistent Anti-bfcache System:** Leveraging Javascript `pageshow` global listeners, the internal counting mechanisms cannot be falsely triggered or preserved via browser caching behavior!
 - **Post/Redirect/Get Pattern:** Refreshing the results dashboard cleanly redirects back to the home page without form resubmission warnings.
 
-## Demonstration
+## Demonstration Screenshots
 
-### The Typing Interface
-![Typing Interface](file:///C:/Users/asus/.gemini/antigravity/brain/82700e11-b46c-45cd-9232-6388413607ea/screenshot_home_1772566870118.png)
+### The Typing Interface (A+ Text Scaling Active)
+![Typing Interface](assets/typing_interface.png)
 
 ## Technology Stack
 

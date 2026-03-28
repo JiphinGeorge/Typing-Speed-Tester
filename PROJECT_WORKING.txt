@@ -21,12 +21,14 @@ Key features:
   - Keypress frequency heatmap rendered on a visual keyboard layout
   - 60-Second Auto-Submit Timer
   - Enter Key Quick Submit for instant test completion
-  - Working Dark/Light Mode toggle persisting via localStorage
+  - Adjustable Typography (A- / A+ scaling) with LocalStorage persistence
   - Animated 3D CSS Cube Loading Overlay on every page refresh
-  - Randomized Pro Tips displayed during loading
+  - Working Dark/Light Mode toggle persisting via localStorage
   - Post/Redirect/Get (PRG) pattern prevents form resubmission warnings
   - Highest WPM score tracking (persists in-memory as long as the server runs)
-  - Randomized paragraphs on every page load
+  - Dynamic Network Paragraphs: Fetches randomized real-time quotes from an external API
+  - Adjustable Paragraph Lengths: Cycle between Short, Med, and Long sentence combinations
+  - Strict Back-cache (bfcache) Prevention: Forces hard reload if users attempt back-navigation
   - Gradient-themed logo and branding across all pages
 
 
@@ -112,24 +114,28 @@ XcelerType follows the Model-View-Controller (MVC) design pattern:
 
 --- PHASE 2: USER VISITS THE HOME PAGE ---
 
-  1. User opens http://localhost:8080/ in their browser
-  2. Browser sends an HTTP GET request to "/"
+  1. User opens http://localhost:8080/ in their browser (or clicks a Length toggle)
+  2. Browser sends an HTTP GET request to "/" with an optional "?length=" parameter
   3. Spring matches this to TypingController.showTypingPage() [@GetMapping("/")]
   4. The method:
-     a. Picks a random paragraph from the PREDEFINED_PARAGRAPHS array
-     b. Adds it to the Model as "paragraph"
-     c. Adds the current highestWpm to the Model
-     d. Returns the string "index"
+     a. Triggers `fetchDynamicParagraph(length)` which spawns a `RestTemplate`.
+     b. The controller fires a synchronous network call to DummyJSON's generic Quotes API.
+     c. It extracts up to 5 quotes from the JSON object based on your selected `length`.
+     d. Shuffles the responses, concatenates them into a single string, and returns it.
+     e. (If the network API fails/timeouts, it falls back to the static hard-coded array).
+     f. Extracted text is added to the Model as "paragraph".
+     g. Returns the string "index".
   5. Thymeleaf finds templates/index.html and renders it:
-     a. ${paragraph} is replaced with the actual paragraph text
+     a. ${paragraph} is replaced with the newly fetched network paragraph
      b. ${highestWpm} is replaced with the current high score
+     c. Active Length UI tabs are highlighted via Model class appends
   6. The rendered HTML is sent back to the browser
   7. JavaScript executes on page load:
-     a. Reads the paragraph from a hidden <input> field
-     b. Splits it into individual CHARACTERS
-     c. Wraps each character in a <span> tag for highlighting
-     d. Attaches an "input" event listener to the textarea
-     e. Attaches a "keydown" event listener to track key frequencies
+     a. Checks bfcache (event.persisted). If loaded via back-button, forcefully triggers `location.reload()`.
+     b. Restores the user's preferred FontSize scaling (A-/A+) via localStorage properties.
+     c. Read the paragraph from a hidden <input> field, splits into single characters, and spans them.
+     d. Attaches an "input" event listener to the textarea.
+     e. Attaches a "keydown" event listener to track key frequencies.
 
 --- PHASE 3: USER TYPES ---
 
@@ -305,7 +311,10 @@ XcelerType follows the Model-View-Controller (MVC) design pattern:
   - The heatmap only tracks A-Z letters and the space bar.
   - Accuracy is word-based (not character-based) on the backend.
   - The frontend highlighting is character-based for visual feedback.
-  - Random paragraphs are selected server-side on each page load.
+  - Dynamic paragraphs strictly require internet access. If the user disconnects, 
+    the system safely degrades to internal static strings.
+  - Bfcache fixes aggressively stop the test clock from ticking if a user 
+    tabs backwards using their browser history.
   - The application uses Tailwind CSS via CDN (no local installation needed).
 
 
