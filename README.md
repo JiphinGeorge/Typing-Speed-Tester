@@ -1,7 +1,5 @@
 # XcelerType
 
-![XcelerType Heatmap](assets/dashboard_results.png)
-
 A dynamic, minimalist Spring Boot web application designed to track and improve your keyboard typing speed and accuracy in real-time. Built specifically around a clean MVC architecture under Java 21, the application requires absolutely no database setup to operate out of the box.
 
 ## Features
@@ -17,6 +15,9 @@ A dynamic, minimalist Spring Boot web application designed to track and improve 
 
 ### The Typing Interface (A+ Text Scaling Active)
 ![Typing Interface](assets/typing_interface.png)
+
+### The Results Dashboard
+![XcelerType Heatmap](assets/dashboard_results.png)
 
 ## Technology Stack
 
