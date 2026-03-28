@@ -406,15 +406,30 @@
              
              // Calculate perfect words
              const typedContent = typedTextArea.value;
-             const typedWords = typedContent.trim().split(/\s+/);
-             const originalWords = originalText.trim().split(/\s+/);
-             let perfectCount = 0;
-             const minLen = Math.min(typedWords.length, originalWords.length);
-             for (let i = 0; i < minLen; i++) {
-                 if (typedWords[i] === originalWords[i] && !erroredWords.has(i)) {
-                     perfectCount++;
+             const wordEnds = [];
+             for (let i = 0; i < chars.length; i++) {
+                 if (chars[i] === ' ') {
+                     wordEnds.push(i);
                  }
              }
+             wordEnds.push(chars.length);
+             
+             let perfectCount = 0;
+             for (let w = 0; w < wordEnds.length; w++) {
+                 let wordEndIndex = wordEnds[w];
+                 if (w < wordEnds.length - 1) {
+                     // Requires typing past the space
+                     if (typedContent.length > wordEndIndex && !erroredWords.has(w)) {
+                         perfectCount++;
+                     }
+                 } else {
+                     // Requires reaching the end of the final word
+                     if (typedContent.length >= wordEndIndex && !erroredWords.has(w)) {
+                         perfectCount++;
+                     }
+                 }
+             }
+             
              document.getElementById("perfectWordsCount").value = perfectCount;
         });
         
