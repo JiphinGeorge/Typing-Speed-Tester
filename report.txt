@@ -1,0 +1,68 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{\textbf{Java Micro Project Report: XcelerType}}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+XcelerType is a dynamic, minimalist web application developed using Spring Boot and Java 21, designed to track and improve a user's keyboard typing speed and accuracy in real-time. The purpose of this project is to provide a responsive, database-free typing environment that dynamically scales text sizes and test lengths while offering accurate character-level performance metrics. It solves the problem of clunky, static typing testers by pulling dynamic content from web APIs and ensuring that the testing environment properly caches user preferences and avoids browser caching loopholes (like the bfcache) that manipulate scores.
+
+\section{Modules / Functionalities}
+The application comprises several core functionalities:
+\begin{itemize}
+    \item \textbf{Character-Level Accuracy Tracking:} Live tracking of keystrokes where correct inputs are highlighted in green and typos are flagged in red.
+    \item \textbf{Dynamic Content Engine:} Implements synchronous network calls to a public DummyJSON Quotes API to dynamically fetch sentences based on the chosen test format.
+    \item \textbf{Adjustable Test Variables:} Users can toggle between Short (1 quote), Medium (3 quotes), and Long (5 quotes) test formats.
+    \item \textbf{Responsive Typography Control:} An A-/A+ scalar instantly resizes the UI's typing area and saves the preference locally within the browser's Local Storage.
+    \item \textbf{Anti-Cheat (Anti-bfcache) System:} Implements JavaScript \texttt{pageshow} listeners to ensure internal timers and counters are not manipulated via browser back buttons.
+\end{itemize}
+
+\section{Technology Used}
+The system is built upon a modern Java-based web ecosystem without relying on database persistence for improved setup speed.
+\begin{itemize}
+    \item \textbf{Backend Programming Language:} Java 21
+    \item \textbf{Main Framework:} Spring Boot
+    \item \textbf{Architecture Template:} Model-View-Controller (MVC) via Thymeleaf
+    \item \textbf{Frontend UI:} Vanilla JavaScript, HTML5, Tailwind CSS
+    \item \textbf{Build \& Dependency Management:} Apache Maven
+\end{itemize}
+
+\section{Implementation}
+XcelerType operates on a streamlined MVC architecture. Upon accessing the main page, the \texttt{TypingController} orchestrates the view setup, handling GET and POST mappings to transition between the active test and the results dashboard, utilizing the Post/Redirect/Get (PRG) pattern for smooth UI flow. 
+
+The \texttt{TypingService} layer houses the core business logic, responsible for evaluating performance metrics. When a user completes a prompt, the raw input data is compared against the target string. The service then calculates the Words Per Minute (WPM), perfect accuracy percentages, and retains the highest session score in memory. The frontend heavily utilizes vanilla JavaScript to capture real-time \texttt{keyup} events, dynamically coloring the document objects based on whether the typed character matches the target index array from the backend model.
+
+\section{Screenshots with Explanation}
+\begin{figure}[h!]
+    \centering
+    % \includegraphics[width=0.8\textwidth]{assets/typing_interface.png}
+    \caption{The Typing Interface: Displays the actively scaling text container with color-coded, real-time typing indicators tracking character accuracy.}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    % \includegraphics[width=0.8\textwidth]{assets/dashboard_results.png}
+    \caption{The Results Dashboard: Showcases the calculated metrics including Speed (WPM), perfect words typed, and Accuracy percentages after test completion.}
+\end{figure}
+
+\section{Conclusion \& References}
+XcelerType elegantly demonstrates the capabilities of modern Java web development when integrated with lightweight JavaScript frontends. By omitting heavy databases and focusing on real-time DOM manipulation alongside robust Spring MVC routing, the application serves as a high-performing micro project for continuous typing improvement and performance tracking.
+
+\vspace{1em}
+\noindent \textbf{References:}
+\begin{itemize}
+    \item Spring Boot Documentation: \url{https://spring.io/projects/spring-boot}
+    \item Tailwind CSS Documentation: \url{https://tailwindcss.com/docs}
+    \item DummyJSON Quotes API: \url{https://dummyjson.com/docs/quotes}
+\end{itemize}
+
+\end{document}
