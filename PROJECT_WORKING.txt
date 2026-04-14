@@ -18,6 +18,7 @@ then measuring Words Per Minute (WPM) and Accuracy when the test is submitted.
 
 Key features:
   - Character-by-character live highlighting (green = correct, red = incorrect)
+  - Perfect Words metric analyzing flawlessly typed words across the session
   - Keypress frequency heatmap rendered on a visual keyboard layout
   - 60-Second Auto-Submit Timer
   - Enter Key Quick Submit for instant test completion

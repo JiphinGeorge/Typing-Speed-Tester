@@ -19,7 +19,8 @@ XcelerType is a dynamic, minimalist web application developed using Spring Boot 
 \section{Modules / Functionalities}
 The application comprises several core functionalities:
 \begin{itemize}
-    \item \textbf{Character-Level Accuracy Tracking:} Live tracking of keystrokes where correct inputs are highlighted in green and typos are flagged in red.
+    \item \textbf{Character-Level Accuracy Tracking:} Live tracking of keystrokes where correct inputs are highlighted in green and typos are flagged in red. Includes a Perfect Words metric computing flawlessly completed words.
+    \item \textbf{Keypress Frequency Heatmap:} An external visual dataset displaying hot and cold keys directly associated with the input pattern of the test session.
     \item \textbf{Dynamic Content Engine:} Implements synchronous network calls to a public DummyJSON Quotes API to dynamically fetch sentences based on the chosen test format.
     \item \textbf{Adjustable Test Variables:} Users can toggle between Short (1 quote), Medium (3 quotes), and Long (5 quotes) test formats.
     \item \textbf{Responsive Typography Control:} An A-/A+ scalar instantly resizes the UI's typing area and saves the preference locally within the browser's Local Storage.

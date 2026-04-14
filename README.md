@@ -4,7 +4,8 @@ A dynamic, minimalist Spring Boot web application designed to track and improve 
 
 ## Features
 
-- **Character-Level Accuracy Tracking:** The application tracks your typing live, character by character. Correct letters glow a vibrant green, while typos immediately flag a bold red indicator.
+- **Character-Level Accuracy Tracking:** The application tracks your typing live, character by character. Correct letters glow a vibrant green, while typos immediately flag a bold red indicator. The dashboard accurately calculates completely **Perfect Words** mapped over your session.
+- **Session-Based Keyboard Heatmap:** Post-test dashboard visualizes your personal keypress frequencies, allowing you to highlight fast or struggling individual keystrokes.
 - **Dynamic Network Text Generation:** Forget static coding strings! XcelerType performs synchronous network calls to the public DummyJSON Quotes API to dynamically stitch together new layouts depending on the test size you prefer.
 - **Adjustable Test Lengths:** Cycle between Short (1 quote), Med (3 quotes), and Long (5 quotes) testing constraints on the fly.
 - **Responsive Typography Control:** A stateful `A- / A+` controller actively scales the test environment's UI parameters. Your sizing preferences are safely cached in the browser's Local Storage!
